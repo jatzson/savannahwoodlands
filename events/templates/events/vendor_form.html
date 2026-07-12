@@ -1,0 +1,595 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block title %}Vendor Participation Form — Savannah Woodlands{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .vendor-page {
+        min-height: 100vh;
+        background: var(--cream);
+        padding: 4rem 1rem;
+    }
+    .vendor-container {
+        max-width: 820px;
+        margin: 0 auto;
+    }
+
+    /* PAGE HEADER */
+    .vendor-page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    .vendor-page-header .step-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--forest);
+        color: var(--gold);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        margin-bottom: 1rem;
+    }
+    .vendor-page-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--forest);
+        margin-bottom: 0.5rem;
+    }
+    .vendor-page-header p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        max-width: 520px;
+        margin: 0 auto;
+    }
+
+    /* PROGRESS STEPS */
+    .progress-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        margin-bottom: 3rem;
+    }
+    .ps-step {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--muted);
+    }
+    .ps-step.done { color: var(--forest); }
+    .ps-step.active { color: var(--forest); }
+    .ps-num {
+        width: 28px; height: 28px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem; font-weight: 700;
+        background: var(--border);
+        color: var(--muted);
+        flex-shrink: 0;
+    }
+    .ps-step.done .ps-num { background: var(--forest); color: white; }
+    .ps-step.active .ps-num { background: var(--gold); color: var(--forest); }
+    .ps-line { width: 60px; height: 2px; background: var(--border); margin: 0 0.5rem; }
+    .ps-line.done { background: var(--forest); }
+
+    /* CARD */
+    .vendor-card {
+        background: var(--white);
+        border-radius: 14px;
+        box-shadow: 0 4px 30px rgba(0,0,0,0.07);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    .vendor-card-header {
+        background: var(--forest);
+        padding: 1.25rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .vch-icon {
+        width: 36px; height: 36px;
+        background: rgba(201,168,76,0.2);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1rem; flex-shrink: 0;
+    }
+    .vch-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--white);
+    }
+    .vch-sub { font-size: 0.72rem; color: rgba(255,255,255,0.55); margin-top: 1px; }
+    .vendor-card-body { padding: 2rem; }
+
+    /* FORM ELEMENTS */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .form-row.single { grid-template-columns: 1fr; }
+    .form-group { margin-bottom: 0; }
+    .form-group label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--forest);
+        margin-bottom: 0.45rem;
+    }
+    .form-group .help { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+    .form-input {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 1.5px solid var(--border);
+        border-radius: 6px;
+        font-size: 0.92rem;
+        font-family: 'Inter', sans-serif;
+        background: var(--white);
+        color: var(--charcoal);
+        transition: border-color 0.2s, box-shadow 0.2s;
+        outline: none;
+    }
+    .form-input:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(26,58,46,0.08); }
+    .form-input.error { border-color: #dc2626; }
+    textarea.form-input { resize: vertical; min-height: 90px; }
+    .field-errors { list-style: none; }
+    .field-errors li { color: #dc2626; font-size: 0.78rem; margin-top: 0.3rem; }
+
+    /* DESIGNATION RADIO */
+    .designation-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; }
+    .desig-option { position: relative; }
+    .desig-option input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+    .desig-option label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 1.1rem 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        background: var(--white);
+    }
+    .desig-option input[type="radio"]:checked + label {
+        border-color: var(--forest);
+        background: #f0f7f4;
+        box-shadow: 0 0 0 3px rgba(26,58,46,0.08);
+    }
+    .desig-icon { font-size: 1.5rem; }
+    .desig-name { font-size: 0.82rem; font-weight: 700; color: var(--forest); }
+    .desig-desc { font-size: 0.68rem; color: var(--muted); }
+
+    /* PRICE ROW */
+    .price-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .price-input-wrap { position: relative; }
+    .price-input-wrap .currency {
+        position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+        font-weight: 600; color: var(--muted); font-size: 0.9rem;
+        pointer-events: none;
+    }
+    .price-input-wrap .form-input { padding-left: 2rem; }
+
+    /* MEDIA UPLOAD */
+    .upload-zone {
+        border: 2px dashed var(--border);
+        border-radius: 10px;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        transition: border-color 0.2s, background 0.2s;
+    }
+    .upload-zone.dragover { border-color: var(--forest); background: #f0f7f4; }
+    .upload-zone h3 { font-size: 0.95rem; font-weight: 600; color: var(--forest); margin-bottom: 0.3rem; }
+    .upload-zone p { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .upload-btn {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: var(--forest); color: white;
+        border: none; border-radius: 6px;
+        padding: 0.6rem 1.25rem; font-size: 0.85rem; font-weight: 600;
+        cursor: pointer; transition: background 0.2s; font-family: 'Inter', sans-serif;
+        margin-top: 0.5rem;
+    }
+    .upload-btn:hover { background: #0f2419; }
+    .file-type-tag { background: #f0f7f4; color: var(--forest); font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 2px; }
+    .file-count-bar {
+        display: none; align-items: center; justify-content: space-between;
+        background: #f0f7f4; border: 1px solid #b8ddd0;
+        border-radius: 6px; padding: 0.6rem 1rem;
+        margin-top: 1rem; font-size: 0.82rem; font-weight: 600; color: var(--forest);
+    }
+    .file-count-bar.visible { display: flex; }
+    .clear-all-btn { font-size: 0.75rem; color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600; text-decoration: underline; }
+    .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+    .preview-card { position: relative; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--border); background: var(--white); }
+    .preview-card .thumb { width: 100%; height: 95px; object-fit: cover; display: block; }
+    .preview-card .video-thumb { width: 100%; height: 95px; background: #1a3a2e; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
+    .preview-card .file-info { padding: 0.35rem 0.5rem; font-size: 0.67rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .preview-card .remove-btn { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; background: rgba(220,38,38,0.9); color: white; border: none; border-radius: 50%; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .preview-card .media-type-badge { position: absolute; bottom: 26px; left: 4px; background: rgba(0,0,0,0.6); color: white; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; }
+    /* SUBMIT AREA */
+    .submit-area { padding: 0 2rem 2rem; }
+    .submit-btn {
+        width: 100%; padding: 1.1rem;
+        background: var(--forest); color: var(--white);
+        border: none; border-radius: 6px;
+        font-size: 1rem; font-weight: 700;
+        font-family: 'Inter', sans-serif;
+        cursor: pointer; transition: background 0.2s;
+        letter-spacing: 0.02em;
+    }
+    .submit-btn:hover { background: #0f2419; }
+    .secure-note { text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 0.85rem; }
+
+    .messages { list-style: none; margin-bottom: 1.5rem; }
+    .messages li { padding: 0.75rem 1rem; border-radius: 6px; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; font-size: 0.875rem; }
+
+    .registrant-pill {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: #f0f7f4; border: 1px solid #b8ddd0;
+        border-radius: 20px; padding: 0.4rem 1rem;
+        font-size: 0.82rem; color: var(--forest); font-weight: 500;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 700px) {
+        .form-row { grid-template-columns: 1fr; }
+        .designation-options { grid-template-columns: 1fr; }
+        .price-row { grid-template-columns: 1fr; }
+        .vendor-card-body { padding: 1.25rem; }
+        .submit-area { padding: 0 1.25rem 1.25rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="vendor-page">
+    <div class="vendor-container">
+
+        <!-- Page Header -->
+        <div class="vendor-page-header">
+            <div class="step-badge">🏢 Step 2 of 2</div>
+            <h1>Vendor Participation Form</h1>
+            <p>Tell us about yourself and the property you'd like to showcase at the event.</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-steps">
+            <div class="ps-step done">
+                <div class="ps-num">✓</div>
+                <span>Registration</span>
+            </div>
+            <div class="ps-line done"></div>
+            <div class="ps-step active">
+                <div class="ps-num">2</div>
+                <span>Property Details</span>
+            </div>
+            <div class="ps-line"></div>
+            <div class="ps-step">
+                <div class="ps-num">3</div>
+                <span>Your Ticket</span>
+            </div>
+        </div>
+
+        <!-- Registrant pill -->
+        <div style="text-align:center;">
+            <div class="registrant-pill">
+                👤 Registering as: <strong>{{ reg.full_name }}</strong> &nbsp;·&nbsp; {{ reg.email }}
+            </div>
+        </div>
+
+        {% if messages %}
+        <ul class="messages">{% for msg in messages %}<li>{{ msg }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <!-- SECTION 1: DESIGNATION & COMPANY -->
+            <div class="vendor-card">
+                <div class="vendor-card-header">
+                    <div class="vch-icon">🏷️</div>
+                    <div>
+                        <div class="vch-title">Your Designation</div>
+                        <div class="vch-sub">Who are you in relation to this property?</div>
+                    </div>
+                </div>
+                <div class="vendor-card-body">
+                    <div class="form-group" style="margin-bottom:1.5rem;">
+                        <label>Designation *</label>
+                        <div class="designation-options">
+                            <div class="desig-option">
+                                <input type="radio" name="designation" id="desig_owner" value="owner"
+                                       {% if form.designation.value == 'owner' or not form.designation.value %}checked{% endif %}>
+                                <label for="desig_owner">
+                                    <span class="desig-icon">🏠</span>
+                                    <span class="desig-name">Owner</span>
+                                    <span class="desig-desc">You directly own the property</span>
+                                </label>
+                            </div>
+                            <div class="desig-option">
+                                <input type="radio" name="designation" id="desig_mandate" value="mandate"
+                                       {% if form.designation.value == 'mandate' %}checked{% endif %}>
+                                <label for="desig_mandate">
+                                    <span class="desig-icon">🤝</span>
+                                    <span class="desig-name">Mandate</span>
+                                    <span class="desig-desc">Authorised to sell on behalf of owner</span>
+                                </label>
+                            </div>
+                            <div class="desig-option">
+                                <input type="radio" name="designation" id="desig_developer" value="developer"
+                                       {% if form.designation.value == 'developer' %}checked{% endif %}>
+                                <label for="desig_developer">
+                                    <span class="desig-icon">🏗️</span>
+                                    <span class="desig-name">Developer</span>
+                                    <span class="desig-desc">You developed or are developing the property</span>
+                                </label>
+                            </div>
+                        </div>
+                        {% if form.designation.errors %}<ul class="field-errors">{% for e in form.designation.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label for="id_company_name">Company / Owner / Developer Name *</label>
+                            <input type="text" name="company_name" id="id_company_name"
+                                   class="form-input {% if form.company_name.errors %}error{% endif %}"
+                                   placeholder="e.g. Greenfield Developers Ltd"
+                                   value="{{ form.company_name.value|default:'' }}">
+                            {% if form.company_name.errors %}<ul class="field-errors">{% for e in form.company_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: PROPERTY DETAILS -->
+            <div class="vendor-card">
+                <div class="vendor-card-header">
+                    <div class="vch-icon">🏗️</div>
+                    <div>
+                        <div class="vch-title">Property Details</div>
+                        <div class="vch-sub">Information about the property you're showcasing</div>
+                    </div>
+                </div>
+                <div class="vendor-card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="id_property_type">Type of Property *</label>
+                            <input type="text" name="property_type" id="id_property_type"
+                                   class="form-input {% if form.property_type.errors %}error{% endif %}"
+                                   placeholder="e.g. Residential Land, Commercial Plot"
+                                   value="{{ form.property_type.value|default:'' }}">
+                            {% if form.property_type.errors %}<ul class="field-errors">{% for e in form.property_type.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_location">Location *</label>
+                            <input type="text" name="location" id="id_location"
+                                   class="form-input {% if form.location.errors %}error{% endif %}"
+                                   placeholder="e.g. Gwarinpa, Abuja"
+                                   value="{{ form.location.value|default:'' }}">
+                            {% if form.location.errors %}<ul class="field-errors">{% for e in form.location.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label for="id_title">Title / Document Type *</label>
+                            <input type="text" name="title" id="id_title"
+                                   class="form-input {% if form.title.errors %}error{% endif %}"
+                                   placeholder="e.g. C of O, R of O, Deed of Assignment, Governor's Consent"
+                                   value="{{ form.title.value|default:'' }}">
+                            <div class="help">The legal document that confirms ownership or right of occupancy</div>
+                            {% if form.title.errors %}<ul class="field-errors">{% for e in form.title.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: PRICING -->
+            <div class="vendor-card">
+                <div class="vendor-card-header">
+                    <div class="vch-icon">💰</div>
+                    <div>
+                        <div class="vch-title">Pricing</div>
+                        <div class="vch-sub">Set your open market and event-exclusive prices</div>
+                    </div>
+                </div>
+                <div class="vendor-card-body">
+                    <div class="price-row">
+                        <div class="form-group">
+                            <label for="id_open_market_price">Open Market Price *</label>
+                            <div class="price-input-wrap">
+                                <span class="currency">₦</span>
+                                <input type="text" name="open_market_price" id="id_open_market_price"
+                                       class="form-input {% if form.open_market_price.errors %}error{% endif %}"
+                                       placeholder="45,000,000"
+                                       value="{{ form.open_market_price.value|default:'' }}">
+                            </div>
+                            <div class="help">Regular price outside the event</div>
+                            {% if form.open_market_price.errors %}<ul class="field-errors">{% for e in form.open_market_price.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_event_only_price">Event Only Price *</label>
+                            <div class="price-input-wrap">
+                                <span class="currency">₦</span>
+                                <input type="text" name="event_only_price" id="id_event_only_price"
+                                       class="form-input {% if form.event_only_price.errors %}error{% endif %}"
+                                       placeholder="38,000,000"
+                                       value="{{ form.event_only_price.value|default:'' }}">
+                            </div>
+                            <div class="help">Exclusive discounted price for event attendees</div>
+                            {% if form.event_only_price.errors %}<ul class="field-errors">{% for e in form.event_only_price.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: MEDIA UPLOAD -->
+            <div class="vendor-card">
+                <div class="vendor-card-header">
+                    <div class="vch-icon">📸</div>
+                    <div>
+                        <div class="vch-title">Pictures & Videos</div>
+                        <div class="vch-sub">Optional — upload property media to attract more buyers</div>
+                    </div>
+                </div>
+                <div class="vendor-card-body">
+                    <!-- Hidden file input -->
+                    <input type="file" name="media_files" id="mediaFiles" multiple
+                           accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime,video/x-msvideo"
+                           style="display:none;">
+
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon" style="font-size:2.5rem;margin-bottom:0.5rem;">📁</div>
+                        <h3>Drag & drop files here</h3>
+                        <p>or click the button below to browse your device</p>
+                        <button type="button" class="upload-btn" onclick="document.getElementById('mediaFiles').click()">
+                            📂 Choose Files
+                        </button>
+                        <div style="margin-top:0.85rem;">
+                            <span class="file-type-tag">JPG</span>
+                            <span class="file-type-tag">PNG</span>
+                            <span class="file-type-tag">WEBP</span>
+                            <span class="file-type-tag">MP4</span>
+                            <span class="file-type-tag">MOV</span>
+                        </div>
+                    </div>
+
+                    <div class="file-count-bar" id="fileCountBar">
+                        <span id="fileCountText">0 files selected</span>
+                        <button type="button" class="clear-all-btn" onclick="clearAllFiles()">✕ Remove all</button>
+                    </div>
+
+                    <div class="preview-grid" id="previewGrid"></div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: ADDITIONAL NOTES -->
+            <div class="vendor-card">
+                <div class="vendor-card-header">
+                    <div class="vch-icon">📝</div>
+                    <div>
+                        <div class="vch-title">Additional Notes</div>
+                        <div class="vch-sub">Optional — anything else buyers should know</div>
+                    </div>
+                </div>
+                <div class="vendor-card-body">
+                    <div class="form-group">
+                        <label for="id_additional_notes">Notes</label>
+                        <textarea name="additional_notes" id="id_additional_notes"
+                                  class="form-input"
+                                  placeholder="e.g. Corner piece, close to major road, survey available, flexible payment plan...">{{ form.additional_notes.value|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUBMIT -->
+            <div class="submit-area" style="padding: 0;">
+                <button type="submit" class="submit-btn">Submit & Get My Vendor Ticket →</button>
+                <p class="secure-note">🔒 Your details are secure and will only be shared with event organisers</p>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    // ── File upload with drag-drop, preview & remove ──
+    let selectedFiles = [];
+
+    const mediaInput  = document.getElementById('mediaFiles');
+    const uploadZone  = document.getElementById('uploadZone');
+    const previewGrid = document.getElementById('previewGrid');
+    const countBar    = document.getElementById('fileCountBar');
+    const countText   = document.getElementById('fileCountText');
+
+    // Open file picker when zone is clicked (not already handled by button)
+    uploadZone.addEventListener('click', function(e) {
+        if (e.target.tagName !== 'BUTTON') mediaInput.click();
+    });
+
+    // Drag events
+    uploadZone.addEventListener('dragover',  e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+    uploadZone.addEventListener('drop', e => {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+        addFiles(Array.from(e.dataTransfer.files));
+    });
+
+    // File input change
+    mediaInput.addEventListener('change', function() {
+        addFiles(Array.from(this.files));
+        this.value = ''; // reset so same file can be re-added if removed
+    });
+
+    function addFiles(newFiles) {
+        newFiles.forEach(file => {
+            // Avoid exact duplicates by name+size
+            const isDup = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+            if (!isDup) selectedFiles.push(file);
+        });
+        syncInputAndRender();
+    }
+
+    function removeFile(idx) {
+        selectedFiles.splice(idx, 1);
+        syncInputAndRender();
+    }
+
+    function clearAllFiles() {
+        selectedFiles = [];
+        syncInputAndRender();
+    }
+
+    function syncInputAndRender() {
+        // Push selected files back into the input via DataTransfer
+        const dt = new DataTransfer();
+        selectedFiles.forEach(f => dt.items.add(f));
+        mediaInput.files = dt.files;
+
+        // Update count bar
+        if (selectedFiles.length > 0) {
+            const imgs   = selectedFiles.filter(f => f.type.startsWith('image')).length;
+            const videos = selectedFiles.filter(f => f.type.startsWith('video')).length;
+            let parts = [];
+            if (imgs)   parts.push(`${imgs} photo${imgs > 1 ? 's' : ''}`);
+            if (videos) parts.push(`${videos} video${videos > 1 ? 's' : ''}`);
+            countText.textContent = parts.join(' · ') + ' selected';
+            countBar.classList.add('visible');
+        } else {
+            countBar.classList.remove('visible');
+        }
+
+        // Render preview cards
+        previewGrid.innerHTML = '';
+        selectedFiles.forEach((file, idx) => {
+            const card = document.createElement('div');
+            card.className = 'preview-card';
+
+            const removeBtn = `<button type="button" class="remove-btn" onclick="removeFile(${idx})" title="Remove">✕</button>`;
+            const badge = `<div class="media-type-badge">${file.type.startsWith('video') ? '🎥 VIDEO' : '🖼 PHOTO'}</div>`;
+            const info  = `<div class="file-info" title="${file.name}">${file.name}</div>`;
+
+            if (file.type.startsWith('image')) {
+                const url = URL.createObjectURL(file);
+                card.innerHTML = `<img class="thumb" src="${url}" alt="${file.name}">${badge}${removeBtn}${info}`;
+            } else {
+                card.innerHTML = `<div class="video-thumb">🎬</div>${badge}${removeBtn}${info}`;
+            }
+
+            previewGrid.appendChild(card);
+        });
+    }
+
+</script>
+{% endblock %}

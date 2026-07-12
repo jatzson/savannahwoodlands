@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Savannah Woodlands{% endblock %}</title>
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --forest: #1a3a2e;
+            --gold: #c9a84c;
+            --gold-light: #e8c96a;
+            --cream: #faf8f3;
+            --charcoal: #2c2c2c;
+            --muted: #6b7280;
+            --border: #e5e0d8;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.6;
+        }
+
+        /* NAV */
+        nav {
+            background: var(--forest);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .nav-logo-img {
+            height: 42px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 0.02em;
+        }
+        .nav-brand span {
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+        .nav-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-cta {
+            background: var(--gold) !important;
+            color: var(--forest) !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            font-weight: 600 !important;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--forest);
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            padding: 2.5rem 2rem;
+            margin-top: 5rem;
+        }
+        footer .footer-brand {
+            font-family: 'Playfair Display', serif;
+            color: var(--white);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        footer .footer-tag {
+            color: var(--gold);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        footer .footer-contact { font-size: 0.85rem; }
+        footer .footer-contact a { color: var(--gold); text-decoration: none; }
+
+        /* UTILITIES */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+        .btn {
+            display: inline-block;
+            padding: 0.85rem 2rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: var(--forest);
+        }
+        .btn-gold:hover { background: var(--gold-light); }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+        }
+        .btn-outline:hover { background: var(--gold); color: var(--forest); }
+    </style>
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}" class="nav-logo">
+            <img src="{% static 'events/img/logo.png' %}" alt="Savannah Woodlands" class="nav-logo-img">
+        </a>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'home' %}#tickets">Tickets</a></li>
+            <li><a href="{% url 'home' %}#contact">Enquiries</a></li>
+            <li><a href="{% url 'register' %}" class="nav-cta">Register Now</a></li>
+        </ul>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer>
+        <img src="{% static 'events/img/logo.png' %}" alt="Savannah Woodlands" style="height:60px;width:auto;filter:brightness(0) invert(1);margin-bottom:0.75rem;">
+        <div class="footer-contact">
+            <p>📞 <a href="tel:+2349015948870">+234 901 594 8870</a> &nbsp;|&nbsp; <a href="tel:+2349011229236">+234 901 122 9236</a> &nbsp;|&nbsp; ✉ <a href="mailto:savannahwoodlands.ng@gmail.com">savannahwoodlands.ng@gmail.com</a></p>
+            <p style="margin-top:1rem;font-size:0.75rem;opacity:0.5;">© 2026 Savannah Woodlands Ltd. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

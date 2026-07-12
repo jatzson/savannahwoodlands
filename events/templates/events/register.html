@@ -1,0 +1,181 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block title %}Register — Abuja Buy & Sell Property 2026{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .reg-page { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+
+    .reg-left {
+        background: #037216;
+        padding: 5rem 4rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .reg-left-bg {
+        position: absolute; inset: 0;
+        background-image: url("{% static 'events/img/flyer1.jpeg' %}");
+        background-size: cover; background-position: center top;
+        opacity: 0.18;
+    }
+    .reg-left-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(6, 109, 23, 0.5) 0%, rgba(52, 117, 66, 0.95) 100%);
+    }
+    .reg-left-content { position: relative; z-index: 2; }
+    .reg-left-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
+    .reg-left h2 { font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 900; color: var(--white); line-height: 1.1; margin-bottom: 0.75rem; }
+    .reg-left h2 .accent { color: var(--gold); }
+    .reg-left .tagline { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 2.5rem; line-height: 1.6; border-left: 2px solid var(--gold); padding-left: 0.85rem; }
+    .event-detail-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; }
+    .event-detail-item { display: flex; align-items: flex-start; gap: 1rem; padding-bottom: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .event-detail-item:last-child { border-bottom: none; }
+    .edl-icon { width: 38px; height: 38px; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0; }
+    .edl-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+    .edl-value { color: var(--white); font-size: 0.88rem; font-weight: 500; }
+
+    .reg-right { background: var(--cream); padding: 5rem 4rem; display: flex; flex-direction: column; justify-content: center; }
+    .form-heading { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--forest); margin-bottom: 0.4rem; }
+    .form-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 2.5rem; }
+    .form-group { margin-bottom: 1.4rem; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--forest); margin-bottom: 0.45rem; }
+    .form-input { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem; font-family: 'Inter', sans-serif; background: var(--white); color: var(--charcoal); transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+    .form-input:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(26,58,46,0.08); }
+    .form-input.error { border-color: #dc2626; }
+    .field-errors { list-style: none; }
+    .field-errors li { color: #dc2626; font-size: 0.8rem; margin-top: 0.3rem; }
+
+    .ticket-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .ticket-option { position: relative; }
+    .ticket-option input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+    .ticket-option label { display: block; padding: 1.25rem 1rem; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 0.9rem; color: var(--charcoal); background: var(--white); }
+    .ticket-option input[type="radio"]:checked + label { border-color: var(--forest); background: #f0f7f4; box-shadow: 0 0 0 3px rgba(26,58,46,0.08); }
+    .ticket-opt-name { font-weight: 700; color: var(--forest); display: block; margin-bottom: 0.2rem; font-size: 0.95rem; }
+    .ticket-opt-price { color: var(--gold); font-weight: 700; font-size: 1.05rem; display: block; }
+    .ticket-opt-desc { font-size: 0.73rem; color: var(--muted); margin-top: 0.25rem; display: block; }
+    .ticket-check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.65rem; transition: all 0.2s; font-size: 0.7rem; color: transparent; }
+    .ticket-option input[type="radio"]:checked + label .ticket-check { background: var(--forest); border-color: var(--forest); color: white; }
+
+    .submit-btn { width: 100%; padding: 1rem; background: var(--forest); color: var(--white); border: none; border-radius: 6px; font-size: 1rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s; margin-top: 1rem; }
+    .submit-btn:hover { background: #0f2419; }
+    .secure-note { text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+    .messages { list-style: none; margin-bottom: 1.5rem; }
+    .messages li { padding: 0.75rem 1rem; border-radius: 6px; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; font-size: 0.875rem; }
+
+    @media (max-width: 900px) {
+        .reg-page { grid-template-columns: 1fr; }
+        .reg-left { padding: 4rem 2rem 3rem; }
+        .reg-right { padding: 3rem 2rem; }
+        .reg-left h2 { font-size: 2rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="reg-page">
+    <!-- LEFT -->
+    <div class="reg-left">
+        <div class="reg-left-bg"></div>
+        <div class="reg-left-overlay"></div>
+        <div class="reg-left-content">
+            <h2>Abuja Buy &<br>Sell <span class="accent">Land</span></h2>
+            <p class="tagline">Connect, Discover, Invest and Grow.</p>
+
+            <ul class="event-detail-list">
+                <li class="event-detail-item">
+                    <div class="edl-icon">📅</div>
+                    <div><div class="edl-label">Date</div><div class="edl-value">26th September 2026</div></div>
+                </li>
+                <li class="event-detail-item">
+                    <div class="edl-icon">🕐</div>
+                    <div><div class="edl-label">Time</div><div class="edl-value">12:00 PM (Noon)</div></div>
+                </li>
+                <li class="event-detail-item">
+                    <div class="edl-icon">📍</div>
+                    <div><div class="edl-label">Venue</div><div class="edl-value">Chelsea Hotels, Mohammadu Buhari Way, Central Area, Abuja</div></div>
+                </li>
+                <li class="event-detail-item">
+                    <div class="edl-icon">📞</div>
+                    <div><div class="edl-label">Enquiries</div><div class="edl-value">+234 901 594 8870<br>+234 901 122 9236</div></div>
+                </li>
+                <li class="event-detail-item">
+                    <div class="edl-icon">✉️</div>
+                    <div><div class="edl-label">Email</div><div class="edl-value">savannahwoodlands.ng@gmail.com</div></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="reg-right">
+        <div class="form-heading">Secure Your Spot</div>
+        <p class="form-sub">Fill in your details to receive a personalised QR-coded ticket.</p>
+
+        {% if messages %}
+        <ul class="messages">{% for msg in messages %}<li>{{ msg }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_full_name">Full Name</label>
+                <input type="text" name="full_name" id="id_full_name"
+                       class="form-input {% if form.full_name.errors %}error{% endif %}"
+                       placeholder="Enter your full name"
+                       value="{{ form.full_name.value|default:'' }}">
+                {% if form.full_name.errors %}<ul class="field-errors">{% for e in form.full_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">Email Address</label>
+                <input type="email" name="email" id="id_email"
+                       class="form-input {% if form.email.errors %}error{% endif %}"
+                       placeholder="your@email.com"
+                       value="{{ form.email.value|default:'' }}">
+                {% if form.email.errors %}<ul class="field-errors">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_phone">Phone Number</label>
+                <input type="tel" name="phone" id="id_phone"
+                       class="form-input {% if form.phone.errors %}error{% endif %}"
+                       placeholder="+234 800 000 0000"
+                       value="{{ form.phone.value|default:'' }}">
+                {% if form.phone.errors %}<ul class="field-errors">{% for e in form.phone.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label>Participation Type</label>
+                <div class="ticket-options">
+                    <div class="ticket-option">
+                        <input type="radio" name="ticket_type" id="ticket_std" value="ticket"
+                               {% if form.ticket_type.value != 'vendor' %}checked{% endif %}>
+                        <label for="ticket_std">
+                            <div class="ticket-check">✓</div>
+                            <span class="ticket-opt-name">Attendee</span>
+                            <span class="ticket-opt-price">₦35,000</span>
+                            <span class="ticket-opt-desc">General event access</span>
+                        </label>
+                    </div>
+                    <div class="ticket-option">
+                        <input type="radio" name="ticket_type" id="ticket_vendor" value="vendor"
+                               {% if form.ticket_type.value == 'vendor' %}checked{% endif %}>
+                        <label for="ticket_vendor">
+                            <div class="ticket-check">✓</div>
+                            <span class="ticket-opt-name">Vendor 🏢</span>
+                            <span class="ticket-opt-price">₦250,000</span>
+                            <span class="ticket-opt-desc">Showcase your properties</span>
+                        </label>
+                    </div>
+                </div>
+                {% if form.ticket_type.errors %}<ul class="field-errors">{% for e in form.ticket_type.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <button type="submit" class="submit-btn">Get My Ticket →</button>
+            <p class="secure-note">🔒 Your information is secure and will not be shared</p>
+        </form>
+    </div>
+</div>
+{% endblock %}

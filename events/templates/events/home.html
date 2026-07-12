@@ -1,0 +1,425 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block title %}Abuja Buy and Sell Property 2026 — Savannah Woodlands{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* HERO */
+    .hero {
+        position: relative;
+        min-height: 94vh;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        background: #21a533;
+    }
+    .hero-bg {
+        position: absolute;
+        inset: 0;
+        background-image: url("{% static 'events/img/flyer2.jpeg' %}");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.35;
+    }
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(105deg, rgba(56, 87, 67, 0.92) 45%, rgba(143, 209, 149, 0.3) 100%);
+    }
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 6rem 2rem;
+        max-width: 620px;
+        margin-left: 5vw;
+    }
+    .hero-eyebrow {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .hero-eyebrow::before {
+        content: '';
+        display: block;
+        width: 36px;
+        height: 2px;
+        background: var(--gold);
+    }
+    .hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.8rem, 7vw, 5.5rem);
+        font-weight: 900;
+        line-height: 1.0;
+        color: var(--white);
+        margin-bottom: 0.2rem;
+    }
+    .hero h1 .accent { color: var(--gold); display: block; }
+    .hero-tagline {
+        color: rgba(255,255,255,0.65);
+        font-size: 1rem;
+        margin: 1.5rem 0 2.5rem;
+        line-height: 1.6;
+        max-width: 460px;
+        border-left: 3px solid var(--gold);
+        padding-left: 1rem;
+    }
+    .hero-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        margin-bottom: 3rem;
+    }
+    .hero-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+    }
+    .hero-meta-item .icon {
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: rgba(201,168,76,0.15);
+        border: 1px solid rgba(201,168,76,0.5);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.9rem; flex-shrink: 0;
+    }
+    .hero-meta-item .value { color: var(--white); font-size: 0.95rem; font-weight: 500; }
+    .hero-meta-item .value span { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-left: 0.4rem; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* ABOUT STRIP */
+    .about-strip {
+        background: var(--forest);
+        padding: 2.5rem 2rem;
+        text-align: center;
+    }
+    .about-strip p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.75rem;
+        font-weight: 700;
+        font-family: 'Playfair Display', serif;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        max-width: 900px;
+        margin: 0 auto;
+        line-height: 1.4;
+    }
+    .about-strip p strong { color: var(--gold); font-weight: 900; }
+
+    /* FEATURES */
+    .features-strip { background: var(--white); border-bottom: 1px solid var(--border); }
+    .features-inner {
+        max-width: 1100px; margin: 0 auto; padding: 0 2rem;
+        display: grid; grid-template-columns: repeat(4,1fr);
+    }
+    .feature-item {
+        padding: 2rem 1.5rem; border-right: 1px solid var(--border);
+        display: flex; align-items: center; gap: 1rem;
+    }
+    .feature-item:last-child { border-right: none; }
+    .feature-icon {
+        font-size: 1.4rem; width: 46px; height: 46px;
+        background: #f0f7f4; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .feature-text .ft { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .feature-text .fv { font-weight: 600; color: var(--forest); font-size: 0.9rem; }
+
+    /* SECTIONS */
+    .section { padding: 6rem 0; }
+    .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 700; color: var(--forest); margin-bottom: 1rem; }
+
+    /* TICKETS */
+    .tickets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+    .ticket-card {
+        background: var(--white); border: 2px solid var(--border);
+        border-radius: 12px; padding: 2.5rem; position: relative; transition: all 0.2s;
+    }
+    .ticket-card:hover { border-color: var(--gold); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(26, 40, 58, 0.12); }
+    .ticket-card.vendor { background: var(--forest); border-color: var(--gold); }
+    .ticket-card.vendor .ticket-name,
+    .ticket-card.vendor .ticket-price,
+    .ticket-card.vendor .perk { color: var(--white); }
+    .ticket-card.vendor .perk-icon { color: var(--gold); }
+    .ticket-tag { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.3rem 0.75rem; border-radius: 2px; margin-bottom: 1.5rem; }
+    .tag-std { background: #f0f7f4; color: var(--forest); }
+    .tag-vnd { background: var(--gold); color: var(--forest); }
+    .ticket-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--forest); margin-bottom: 0.5rem; }
+    .ticket-price { font-size: 2.4rem; font-weight: 800; color: var(--forest); margin-bottom: 1.5rem; }
+    .ticket-price span { font-size: 0.95rem; font-weight: 400; color: var(--muted); }
+    .ticket-card.vendor .ticket-price span { color: rgba(255,255,255,0.5); }
+    .perks { list-style: none; margin-bottom: 2rem; }
+    .perk { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; font-size: 0.9rem; color: var(--charcoal); }
+    .perk-icon { color: var(--forest); }
+
+    /* ENQUIRIES */
+    .enquiry-band {
+        background: var(--forest);
+        padding: 5rem 2rem;
+        text-align: center;
+    }
+    .enquiry-band h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,4vw,2.8rem); color: var(--white); margin-bottom: 1rem; }
+    .enquiry-band p { color: rgba(255,255,255,0.6); margin-bottom: 2.5rem; }
+    .contact-grid { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .contact-item {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 10px;
+        padding: 1.25rem 2rem;
+        display: flex; align-items: center; gap: 0.75rem;
+        color: var(--white); font-size: 0.95rem;
+    }
+    .contact-item .ci-icon { font-size: 1.2rem; }
+    .contact-item a { color: var(--gold); text-decoration: none; }
+
+
+    /* PROPERTIES */
+    .prop-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+    .prop-card {
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--white);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .prop-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+    .prop-card img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        display: block;
+    }
+    .prop-info { padding: 1.25rem 1.5rem; }
+    .prop-type { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.3rem; }
+    .prop-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--forest); margin-bottom: 0.25rem; }
+    .prop-loc { font-size: 0.8rem; color: var(--muted); }
+
+
+    /* CTA BAND */
+    .cta-band {
+        background: var(--forest);
+        padding: 5rem 2rem;
+        text-align: center;
+    }
+    .cta-band h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        color: var(--white);
+        margin-bottom: 1rem;
+    }
+    .cta-band p { color: rgba(255,255,255,0.65); margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+    @media (max-width: 768px) {
+        .features-inner { grid-template-columns: 1fr 1fr; }
+        .feature-item { border-right: none; border-bottom: 1px solid var(--border); }
+        .tickets-grid { grid-template-columns: 1fr; }
+        nav ul { display: none; }
+        .hero-content { margin-left: 1rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        
+        <h1>
+            ABUJA
+            <span class="accent">BUY & SELL</span>
+            LAND
+        </h1>
+        <p class="hero-tagline">
+            
+        </p>
+        <div class="hero-meta">
+            <div class="hero-meta-item">
+                <div class="icon">📅</div>
+                <div class="value">26th September 2026 <span>Saturday</span></div>
+            </div>
+            <div class="hero-meta-item">
+                <div class="icon">🕐</div>
+                <div class="value">12:00 PM <span>Noon</span></div>
+            </div>
+            <div class="hero-meta-item">
+                <div class="icon">📍</div>
+                <div class="value">Chelsea Hotels, Mohammadu Buhari Way, Central Area, Abuja</div>
+            </div>
+        </div>
+        <div class="hero-actions">
+            <a href="{% url 'register' %}" class="btn btn-gold">Get Your Ticket</a>
+            <a href="#tickets" class="btn btn-outline">View Ticket Types</a>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT STRIP -->
+<div class="about-strip">
+    <p>Connect &nbsp;·&nbsp; <strong>Discover</strong> &nbsp;·&nbsp; Invest &nbsp;·&nbsp; <strong>Grow</strong></p>
+</div>
+
+<!-- FEATURES STRIP -->
+<div class="features-strip">
+    <div class="features-inner">
+        <div class="feature-item">
+            <div class="feature-icon">🏙️</div>
+            <div class="feature-text"><div class="ft">Prime</div><div class="fv">Locations</div></div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">✅</div>
+            <div class="feature-text"><div class="ft">All</div><div class="fv">Verified Properties</div></div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🤝</div>
+            <div class="feature-text"><div class="ft">Direct</div><div class="fv">Investor Connect</div></div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🔒</div>
+            <div class="feature-text"><div class="ft">100%</div><div class="fv">Secure Transactions</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- TICKETS -->
+<section class="section" id="tickets">
+    <div class="container">
+        <div class="section-label">Secure Your Spot</div>
+        <div class="section-title">Choose Your Access Type</div>
+        <p style="color: var(--muted); max-width: 520px;">
+            Two ways to participate — as an attendee or as a vendor showcasing your properties to qualified buyers.
+        </p>
+
+        <div class="tickets-grid">
+            <!-- Ticket -->
+            <div class="ticket-card">
+                <div class="ticket-tag tag-std">Attendee Access</div>
+                <div class="ticket-name">Event Ticket</div>
+                <div class="ticket-price">₦35,000 <span>per person</span></div>
+                <ul class="perks">
+                    <li class="perk"><span class="perk-icon">✓</span> Full event floor access</li>
+                    <li class="perk"><span class="perk-icon">✓</span> Browse verified property listings</li>
+                    <li class="perk"><span class="perk-icon">✓</span> Meet investors & land owners directly</li>
+                    <li class="perk"><span class="perk-icon">✓</span> Event brochure & materials</li>
+                    
+                </ul>
+                <a href="{% url 'register' %}?type=ticket" class="btn btn-gold" style="width:100%;text-align:center;">Register as Attendee</a>
+            </div>
+
+            <!-- Vendor -->
+            <div class="ticket-card vendor">
+                <div class="ticket-tag tag-vnd">🏢 Vendor Spot</div>
+                <div class="ticket-name">Vendorship Participation</div>
+                <div class="ticket-price">₦250,000 <span>per vendor slot</span></div>
+                <ul class="perks">
+                    <li class="perk"><span class="perk-icon">✓</span> Dedicated display booth/space</li>
+                    <li class="perk"><span class="perk-icon">✓</span> Showcase your properties to buyers</li>
+                    <li class="perk"><span class="perk-icon">✓</span> Access to qualified investor network</li>
+                    <li class="perk"><span class="perk-icon">✓</span> Brand visibility & marketing exposure</li>
+                    
+                <a href="{% url 'register' %}?type=vendor" class="btn btn-gold" style="width:100%;text-align:center;">Register as Vendor</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROPERTIES PREVIEW -->
+<section class="section" id="properties" style="background: var(--white); padding-top: 5rem; padding-bottom: 5rem;">
+    <div class="container">
+        <div class="section-label">What To Expect</div>
+        <div class="section-title">Featured Property Types</div>
+        <p style="color: var(--muted); max-width: 540px;">Browse and buy from a curated selection of the finest residential and commercial real estate — all under one roof, one day only.</p>
+
+        <div class="prop-grid">
+            <div class="prop-card">
+                <img src="{% static 'events/img/prop1.jpg' %}" alt="Industrial Land" loading="lazy">
+                <div class="prop-info">
+                    <div class="prop-type">Agricultural</div>
+                    <div class="prop-name">Agricultural Land </div>
+                    
+                </div>
+            </div>
+            <div class="prop-card">
+                <img src="{% static 'events/img/prop2.jpg' %}" alt="Estate Land" loading="lazy">
+                <div class="prop-info">
+                    <div class="prop-type">Gated Estate</div>
+                    <div class="prop-name">Residential Land</div>
+                    
+                </div>
+            </div>
+            <div class="prop-card">
+                <img src="{% static 'events/img/prop3.jpg' %}" alt="Development Land" loading="lazy">
+                <div class="prop-info">
+                    <div class="prop-type">Raw / Development Land</div>
+                    <div class="prop-name">Development Land</div>
+                    
+                </div>
+            </div>
+            <div class="prop-card">
+                <img src="{% static 'events/img/prop4.jpg' %}" alt="Residential Land" loading="lazy">
+                <div class="prop-info">
+                    <div class="prop-type">Commercial</div>
+                    <div class="prop-name">Commercial Land</div>
+                    
+                </div>
+            </div>
+            <div class="prop-card">
+                <img src="{% static 'events/img/prop5.jpg' %}" alt="Agricultural Land" loading="lazy">
+                <div class="prop-info">
+                    <div class="prop-type">Industrial</div>
+                    <div class="prop-name">Industrial Land</div>
+                    
+                </div>
+            </div>
+            <div class="prop-card" style="background: var(--forest); display:flex; align-items:center; justify-content:center; min-height: 300px; flex-direction:column; gap:1rem; padding:2rem; text-align:center;">
+                <div style="font-size:2.5rem;">🏘️</div>
+                <div style="font-family:'Playfair Display',serif; color:var(--white); font-size:1.2rem; font-weight:700;">+Many More</div>
+                <p style="color:rgba(255,255,255,0.6); font-size:0.85rem;">Dozens of verified properties showcased on the day. Register to get first access.</p>
+                <a href="{% url 'register' %}" class="btn btn-gold" style="font-size:0.85rem; padding:0.65rem 1.5rem;">Register Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-band">
+    <h2>Don't Miss This Opportunity</h2>
+    <p>Attendance is strictly limited. Secure your ticket today to unlock exclusive event-only pricing and privileged access to all featured property listings.</p>
+</div>
+
+<!-- ENQUIRIES / CONTACT -->
+<div class="enquiry-band" id="contact">
+    <h2>Enquiries</h2>
+    <p>Have questions? Reach us through any of the channels below.</p>
+    <div class="contact-grid">
+        <div class="contact-item">
+            <span class="ci-icon">📞</span>
+            <div>
+                <a href="tel:+2349015948870">+234 901 594 8870</a><br>
+                <a href="tel:+2349011229236">+234 901 122 9236</a>
+            </div>
+        </div>
+        <div class="contact-item">
+            <span class="ci-icon">✉️</span>
+            <a href="mailto:savannahwoodlands.ng@gmail.com">savannahwoodlands.ng@gmail.com</a>
+        </div>
+    </div>
+    <a href="{% url 'register' %}" class="btn btn-gold" style="font-size:1rem; padding:1rem 2.5rem;">Reserve My Spot Now</a>
+</div>
+
+{% endblock %}
