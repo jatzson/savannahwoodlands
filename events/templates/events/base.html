@@ -19,12 +19,18 @@
             --border: #e5e0d8;
             --white: #ffffff;
         }
+        html {
+            overflow-x: hidden;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background: var(--cream);
             color: var(--charcoal);
             line-height: 1.6;
+            overflow-x: hidden;
+            width: 100%;
         }
+        img { max-width: 100%; }
 
         /* NAV */
         nav {
@@ -43,6 +49,7 @@
             align-items: center;
             gap: 12px;
             text-decoration: none;
+            flex-shrink: 0;
         }
         .nav-logo-img {
             height: 42px;
@@ -85,6 +92,65 @@
             padding: 0.5rem 1.25rem;
             border-radius: 4px;
             font-weight: 600 !important;
+            white-space: nowrap;
+        }
+
+        /* NAV — MOBILE HAMBURGER */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        .nav-toggle span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: var(--white);
+            border-radius: 2px;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+        .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-toggle.open span:nth-child(2) { opacity: 0; }
+        .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 1.25rem; }
+            .nav-brand { font-size: 0.95rem; }
+            .nav-toggle { display: flex; }
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--forest);
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            }
+            .nav-links.open { max-height: 320px; }
+            .nav-links li { width: 100%; }
+            .nav-links a {
+                display: block;
+                padding: 1rem 1.25rem;
+                border-top: 1px solid rgba(255,255,255,0.08);
+            }
+            .nav-cta {
+                display: inline-block;
+                margin: 1rem 1.25rem;
+                text-align: center;
+            }
         }
 
         /* FOOTER */
@@ -135,6 +201,12 @@
             color: var(--gold);
         }
         .btn-outline:hover { background: var(--gold); color: var(--forest); }
+
+        @media (max-width: 600px) {
+            .container { padding: 0 1.25rem; }
+            footer { padding: 2rem 1.25rem; }
+            .btn { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
+        }
     </style>
     {% block extra_styles %}{% endblock %}
 </head>
@@ -143,13 +215,36 @@
         <a href="{% url 'home' %}" class="nav-logo">
             <img src="{% static 'events/img/logo.png' %}" alt="Savannah Woodlands" class="nav-logo-img">
         </a>
-        <ul class="nav-links">
+        <ul class="nav-links" id="navLinks">
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'home' %}#tickets">Tickets</a></li>
             <li><a href="{% url 'home' %}#contact">Enquiries</a></li>
             <li><a href="{% url 'register' %}" class="nav-cta">Register Now</a></li>
         </ul>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
+
+    <script>
+        (function () {
+            var toggle = document.getElementById('navToggle');
+            var links = document.getElementById('navLinks');
+            if (!toggle || !links) return;
+            toggle.addEventListener('click', function () {
+                var isOpen = links.classList.toggle('open');
+                toggle.classList.toggle('open', isOpen);
+                toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+            links.querySelectorAll('a').forEach(function (a) {
+                a.addEventListener('click', function () {
+                    links.classList.remove('open');
+                    toggle.classList.remove('open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                });
+            });
+        })();
+    </script>
 
     {% block content %}{% endblock %}
 
