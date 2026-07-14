@@ -74,14 +74,13 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-else:
-    ALLOWED_HOSTS = [
-        'savannahwoodlands.com',
-        'www.savannahwoodlands.com',
-        '.onrender.com',  
-    ]
+ALLOWED_HOSTS = [
+    'savannahwoodlands.com',
+    'www.savannahwoodlands.com',
+    '.onrender.com',
+    '127.0.0.1',
+    'localhost',
+]
 
 
 CSRF_TRUSTED_ORIGINS = [
