@@ -1,0 +1,255 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block title %}{{ property.title }} — Savannah Woodlands{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .pd-page { padding: 3rem 0 5.5rem; }
+    .pd-breadcrumb { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.75rem; }
+    .pd-breadcrumb a { color: var(--forest); text-decoration: none; font-weight: 600; }
+    .pd-breadcrumb a:hover { text-decoration: underline; }
+
+    .pd-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; align-items: start; }
+
+    /* GALLERY */
+    .pd-main-img { border-radius: 14px; overflow: hidden; height: 420px; box-shadow: 0 16px 40px rgba(0,0,0,0.1); margin-bottom: 1rem; background: #000; position: relative; }
+    .pd-main-img img, .pd-main-img video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pd-gallery { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; }
+    .pd-gallery-thumb {
+        border-radius: 8px; overflow: hidden; height: 82px; border: 2px solid transparent;
+        position: relative; cursor: pointer; background: #000;
+        transition: border-color 0.2s, transform 0.2s;
+    }
+    .pd-gallery-thumb:hover { transform: translateY(-2px); }
+    .pd-gallery-thumb.active { border-color: var(--gold); }
+    .pd-gallery-thumb img, .pd-gallery-thumb video { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.85; transition: opacity 0.2s; }
+    .pd-gallery-thumb:hover img, .pd-gallery-thumb:hover video, .pd-gallery-thumb.active img, .pd-gallery-thumb.active video { opacity: 1; }
+    .pd-video-badge {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 26px; height: 26px; background: rgba(0,0,0,0.55); color: var(--white);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 0.65rem; pointer-events: none;
+    }
+    .pd-main-play-badge {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 64px; height: 64px; background: rgba(0,0,0,0.5); color: var(--white);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; cursor: pointer; transition: background 0.2s, transform 0.2s;
+    }
+    .pd-main-play-badge:hover { background: rgba(0,0,0,0.7); transform: translate(-50%, -50%) scale(1.08); }
+    .pd-main-play-badge.hidden { display: none; }
+
+    .pd-badge-row { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .pd-badge {
+        font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+        padding: 0.4rem 0.85rem; border-radius: 4px; background: var(--forest); color: var(--white);
+    }
+    .pd-badge.type { background: #f0f7f4; color: var(--forest); border: 1px solid #b8ddd0; }
+    .pd-badge.status-new_development { background: var(--gold); color: var(--forest); }
+    .pd-badge.status-under_offer { background: var(--muted); }
+    .pd-badge.status-sold { background: #8b1f1f; }
+
+    .pd-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--forest); margin-bottom: 0.5rem; line-height: 1.2; }
+    .pd-location { font-size: 0.95rem; color: var(--muted); margin-bottom: 1.5rem; }
+
+    .pd-specs { display: flex; gap: 1.75rem; padding: 1.25rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 1.75rem; flex-wrap: wrap; }
+    .pd-spec { display: flex; flex-direction: column; }
+    .pd-spec-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+    .pd-spec-value { font-size: 1rem; font-weight: 700; color: var(--forest); }
+
+    .pd-desc-heading { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--forest); margin-bottom: 0.75rem; }
+    .pd-desc { color: var(--charcoal); font-size: 0.95rem; line-height: 1.8; white-space: pre-line; margin-bottom: 2rem; }
+
+    /* SIDEBAR */
+    .pd-sidebar { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; position: sticky; top: 90px; }
+    .pd-price-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
+    .pd-price { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 800; color: var(--forest); margin-bottom: 1.5rem; }
+    .pd-sidebar .btn { width: 100%; text-align: center; margin-bottom: 0.75rem; }
+    .pd-sidebar-note { font-size: 0.8rem; color: var(--muted); margin-top: 1.25rem; line-height: 1.6; text-align: center; }
+
+    /* RELATED */
+    .pd-related { margin-top: 4.5rem; }
+    .pd-related h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--forest); margin-bottom: 1.75rem; text-align: center; }
+    .listings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
+    .listing-card { border-radius: 12px; overflow: hidden; background: var(--white); border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; }
+    .listing-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.12); }
+    .listing-card-link { text-decoration: none; color: inherit; display: block; }
+    .listing-img-wrap { height: 190px; overflow: hidden; }
+    .listing-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .listing-body { padding: 1.1rem 1.25rem 1.35rem; }
+    .listing-type { font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 0.3rem; }
+    .listing-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--forest); margin-bottom: 0.4rem; }
+    .listing-price { font-weight: 700; color: var(--forest); font-size: 0.88rem; }
+
+    @media (max-width: 900px) {
+        .pd-layout { grid-template-columns: 1fr; }
+        .pd-sidebar { position: static; }
+        .listings-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+        .pd-main-img { height: 260px; }
+        .pd-gallery { grid-template-columns: repeat(4, 1fr); }
+        .pd-title { font-size: 1.5rem; }
+        .listings-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pd-page">
+    <div class="container">
+        <div class="pd-breadcrumb">
+            <a href="{% url 'properties' %}">← Back to Properties</a>
+        </div>
+
+        <div class="pd-layout">
+            <!-- LEFT: gallery + description -->
+            <div>
+                <div class="pd-main-img" id="pdMainStage">
+                    {% if property.main_image %}
+                    <img id="pdMainImg" src="{{ property.main_image.url }}" alt="{{ property.title }}">
+                    {% else %}
+                    <img id="pdMainImg" src="{% static 'events/img/flyer1.jpeg' %}" alt="{{ property.title }}">
+                    {% endif %}
+                    <video id="pdMainVideo" playsinline style="display:none;"></video>
+                    <div class="pd-main-play-badge hidden" id="pdPlayBadge">▶</div>
+                </div>
+
+                {% if property.media_files.all %}
+                <div class="pd-gallery" id="pdGallery">
+                    {% if property.main_image %}
+                    <div class="pd-gallery-thumb active" data-type="image" data-src="{{ property.main_image.url }}">
+                        <img src="{{ property.main_image.url }}" alt="{{ property.title }} cover photo">
+                    </div>
+                    {% endif %}
+                    {% for media in property.media_files.all %}
+                    <div class="pd-gallery-thumb" data-type="{{ media.media_type }}" data-src="{{ media.file.url }}">
+                        {% if media.media_type == 'video' %}
+                        <video src="{{ media.file.url }}#t=0.5" preload="metadata" muted></video>
+                        <span class="pd-video-badge">▶</span>
+                        {% else %}
+                        <img src="{{ media.file.url }}" alt="{{ media.caption|default:property.title }}">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div style="margin-top: 2rem;">
+                    <div class="pd-badge-row">
+                        <span class="pd-badge type">{{ property.get_property_type_display }}</span>
+                        <span class="pd-badge status-{{ property.status }}">{{ property.get_status_display }}</span>
+                    </div>
+                    <h1 class="pd-title">{{ property.title }}</h1>
+                    <div class="pd-location">📍 {{ property.location }}</div>
+
+                    {% if property.bedrooms or property.bathrooms or property.size %}
+                    <div class="pd-specs">
+                        {% if property.bedrooms %}
+                        <div class="pd-spec"><span class="pd-spec-label">Bedrooms</span><span class="pd-spec-value">🛏️ {{ property.bedrooms }}</span></div>
+                        {% endif %}
+                        {% if property.bathrooms %}
+                        <div class="pd-spec"><span class="pd-spec-label">Bathrooms</span><span class="pd-spec-value">🛁 {{ property.bathrooms }}</span></div>
+                        {% endif %}
+                        {% if property.size %}
+                        <div class="pd-spec"><span class="pd-spec-label">Size</span><span class="pd-spec-value">📐 {{ property.size }}</span></div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if property.description %}
+                    <div class="pd-desc-heading">Description</div>
+                    <div class="pd-desc">{{ property.description }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- RIGHT: sidebar -->
+            <div class="pd-sidebar">
+                <div class="pd-price-label">Price</div>
+                <div class="pd-price">{{ property.get_display_price }}</div>
+                <a href="mailto:info@savannahwoodlands.com?subject=Enquiry: {{ property.title }}" class="btn btn-gold">✉️ Enquire By Email</a>
+                <a href="tel:+2349015948870" class="btn btn-outline">📞 Call Us</a>
+                <p class="pd-sidebar-note">Speak with our team for site inspections, documentation checks, and pricing negotiations.</p>
+            </div>
+        </div>
+
+        {% if related_properties %}
+        <div class="pd-related">
+            <h3>Similar Properties</h3>
+            <div class="listings-grid">
+                {% for rp in related_properties %}
+                <div class="listing-card">
+                    <a href="{% url 'property_detail' rp.pk %}" class="listing-card-link">
+                        <div class="listing-img-wrap">
+                            {% if rp.main_image %}
+                            <img src="{{ rp.main_image.url }}" alt="{{ rp.title }}">
+                            {% else %}
+                            <img src="{% static 'events/img/flyer1.jpeg' %}" alt="{{ rp.title }}">
+                            {% endif %}
+                        </div>
+                        <div class="listing-body">
+                            <div class="listing-type">{{ rp.get_property_type_display }}</div>
+                            <div class="listing-name">{{ rp.title }}</div>
+                            <div class="listing-price">{{ rp.get_display_price }}</div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    (function () {
+        var mainImg = document.getElementById('pdMainImg');
+        var mainVideo = document.getElementById('pdMainVideo');
+        var playBadge = document.getElementById('pdPlayBadge');
+        var gallery = document.getElementById('pdGallery');
+        if (!gallery || !mainImg || !mainVideo) return;
+
+        function showImage(src) {
+            mainVideo.pause();
+            mainVideo.style.display = 'none';
+            mainVideo.removeAttribute('src');
+            mainImg.style.display = 'block';
+            mainImg.src = src;
+            playBadge.classList.add('hidden');
+        }
+
+        function showVideo(src) {
+            mainImg.style.display = 'none';
+            mainVideo.src = src;
+            mainVideo.style.display = 'block';
+            mainVideo.controls = false;
+            mainVideo.currentTime = 0;
+            playBadge.classList.remove('hidden');
+        }
+
+        playBadge.addEventListener('click', function () {
+            if (mainVideo.paused) {
+                mainVideo.controls = true;
+                mainVideo.play();
+                playBadge.classList.add('hidden');
+            }
+        });
+
+        gallery.querySelectorAll('.pd-gallery-thumb').forEach(function (thumb) {
+            thumb.addEventListener('click', function () {
+                gallery.querySelectorAll('.pd-gallery-thumb').forEach(function (t) { t.classList.remove('active'); });
+                thumb.classList.add('active');
+                var type = thumb.getAttribute('data-type');
+                var src = thumb.getAttribute('data-src');
+                if (type === 'video') {
+                    showVideo(src);
+                } else {
+                    showImage(src);
+                }
+            });
+        });
+    })();
+</script>
+{% endblock %}

@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Registration, VendorApplication, VendorMedia
+from .models import (
+    Registration, VendorApplication, VendorMedia, ContactMessage,
+    Property, PropertyMedia,
+)
 
 
 class VendorMediaInline(admin.TabularInline):
@@ -27,3 +30,39 @@ class RegistrationAdmin(admin.ModelAdmin):
     search_fields = ['full_name', 'email', 'ticket_number', 'phone']
     readonly_fields = ['id', 'ticket_number', 'qr_code', 'registered_at']
     ordering = ['-registered_at']
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ['full_name', 'email', 'phone', 'is_read', 'submitted_at']
+    list_filter = ['is_read', 'submitted_at']
+    search_fields = ['full_name', 'email', 'message']
+    readonly_fields = ['id', 'full_name', 'email', 'phone', 'message', 'submitted_at']
+    ordering = ['-submitted_at']
+
+
+class PropertyMediaInline(admin.TabularInline):
+    model = PropertyMedia
+    extra = 3
+    fields = ['file', 'media_type', 'caption', 'order']
+    help_text = 'Add as many photos or video clips as you like — media_type is auto-detected from the file if left blank.'
+
+
+@admin.register(Property)
+class PropertyAdmin(admin.ModelAdmin):
+    list_display = ['title', 'property_type', 'status', 'location', 'price', 'media_count', 'is_featured', 'is_active', 'created_at']
+    list_filter = ['property_type', 'status', 'is_featured', 'is_active']
+    search_fields = ['title', 'location', 'description']
+    list_editable = ['is_featured', 'is_active']
+    inlines = [PropertyMediaInline]
+    fieldsets = (
+        (None, {'fields': ('title', 'property_type', 'status', 'location', 'description')}),
+        ('Details', {'fields': ('bedrooms', 'bathrooms', 'size')}),
+        ('Pricing', {'fields': ('price', 'price_on_request')}),
+        ('Cover Photo', {'fields': ('main_image',), 'description': 'This is the thumbnail shown on listing cards. Add extra photos/videos below in the gallery.'}),
+        ('Visibility', {'fields': ('is_featured', 'is_active')}),
+    )
+
+    def media_count(self, obj):
+        return obj.media_files.count()
+    media_count.short_description = 'Gallery Items'

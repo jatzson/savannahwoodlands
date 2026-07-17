@@ -1,5 +1,5 @@
 from django import forms
-from .models import Registration, VendorApplication
+from .models import Registration, VendorApplication, ContactMessage
 
 
 class RegistrationForm(forms.ModelForm):
@@ -37,4 +37,22 @@ class VendorApplicationForm(forms.ModelForm):
             'open_market_price': forms.TextInput(attrs={'placeholder': 'e.g. ₦45,000,000', 'class': 'form-input'}),
             'event_only_price': forms.TextInput(attrs={'placeholder': 'e.g. ₦38,000,000', 'class': 'form-input'}),
             'additional_notes': forms.Textarea(attrs={'placeholder': 'Any extra details about the property...', 'class': 'form-input', 'rows': 3}),
+        }
+
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = ContactMessage
+        fields = ['full_name', 'email', 'phone', 'message']
+        widgets = {
+            'full_name': forms.TextInput(attrs={'placeholder': 'Enter your full name', 'class': 'form-input'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'your@email.com', 'class': 'form-input'}),
+            'phone': forms.TextInput(attrs={'placeholder': '+234 800 000 0000 (optional)', 'class': 'form-input'}),
+            'message': forms.Textarea(attrs={'placeholder': 'How can we help?', 'class': 'form-input', 'rows': 5}),
+        }
+        labels = {
+            'full_name': 'Full Name',
+            'email': 'Email Address',
+            'phone': 'Phone Number',
+            'message': 'Message',
         }

@@ -1,0 +1,164 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block title %}Properties — Savannah Woodlands{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* PAGE HEADER */
+    .page-header {
+        position: relative;
+        padding: 5rem 2rem 4rem;
+        text-align: center;
+        background: var(--forest);
+        overflow: hidden;
+    }
+    .page-header-bg {
+        position: absolute; inset: 0;
+        background-image: url("{% static 'events/img/flyer1.jpeg' %}");
+        background-size: cover; background-position: center;
+        opacity: 0.2;
+    }
+    .page-header-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(26,58,46,0.6) 0%, rgba(10,25,19,0.92) 100%);
+    }
+    .page-header-content { position: relative; z-index: 2; }
+    .page-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; color: var(--white); margin-bottom: 0.75rem; }
+    .page-header p { color: rgba(255,255,255,0.65); max-width: 560px; margin: 0 auto; font-size: 0.95rem; }
+
+    .props-section { padding: 4rem 0 5.5rem; }
+
+    /* FILTER CHIPS */
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 3rem; }
+    .filter-chip {
+        padding: 0.55rem 1.15rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600;
+        text-decoration: none; border: 1.5px solid var(--border); color: var(--forest); background: var(--white);
+        transition: all 0.2s;
+    }
+    .filter-chip:hover { border-color: var(--forest); }
+    .filter-chip.active { background: var(--forest); border-color: var(--forest); color: var(--white); }
+
+    /* LISTINGS GRID (shared naming with company_home) */
+    .listings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
+    .listing-card {
+        border-radius: 12px; overflow: hidden; background: var(--white);
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex; flex-direction: column;
+    }
+    .listing-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.12); }
+    .listing-card-link { text-decoration: none; display: block; color: inherit; }
+    .listing-img-wrap { position: relative; height: 210px; overflow: hidden; }
+    .listing-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .listing-badge {
+        position: absolute; top: 0.85rem; left: 0.85rem;
+        background: var(--forest); color: var(--white);
+        font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+        padding: 0.35rem 0.75rem; border-radius: 4px;
+    }
+    .listing-badge.status-new_development { background: var(--gold); color: var(--forest); }
+    .listing-badge.status-under_offer { background: var(--muted); }
+    .listing-badge.status-sold { background: #8b1f1f; }
+    .listing-body { padding: 1.25rem 1.35rem 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .listing-type { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 0.35rem; }
+    .listing-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--forest); margin-bottom: 0.4rem; line-height: 1.3; }
+    .listing-location { font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.75rem; }
+    .listing-specs { display: flex; gap: 0.9rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem; }
+    .listing-footer {
+        display: flex; align-items: center; justify-content: space-between;
+        padding-top: 1rem; border-top: 1px solid var(--border); margin-top: auto;
+    }
+    .listing-price { font-weight: 700; color: var(--forest); font-size: 0.92rem; }
+    .listing-enquire {
+        font-size: 0.78rem; font-weight: 600; color: var(--gold);
+        text-decoration: none; padding: 0.4rem 0.9rem;
+        border: 1.5px solid var(--gold); border-radius: 6px;
+        transition: all 0.2s;
+    }
+    .listing-enquire:hover { background: var(--gold); color: var(--forest); }
+
+    .no-results { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+    .no-results h3 { font-family: 'Playfair Display', serif; color: var(--forest); margin-bottom: 0.5rem; }
+
+    @media (max-width: 900px) {
+        .listings-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+        .listings-grid { grid-template-columns: 1fr; }
+        .filter-bar { gap: 0.45rem; }
+        .filter-chip { padding: 0.45rem 0.9rem; font-size: 0.78rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="page-header-bg"></div>
+    <div class="page-header-overlay"></div>
+    <div class="page-header-content">
+        <div class="page-eyebrow">Our Portfolio</div>
+        <h1>Land & Property Listings</h1>
+        <p>Browse verified land and property currently available through Savannah Woodlands across Nigeria.</p>
+    </div>
+</div>
+
+<section class="props-section">
+    <div class="container">
+
+        <!-- FILTERS -->
+        <div class="filter-bar">
+            <a href="{% url 'properties' %}" class="filter-chip {% if not selected_type %}active{% endif %}">All</a>
+            {% for value, label in property_types %}
+            <a href="{% url 'properties' %}?type={{ value }}" class="filter-chip {% if selected_type == value %}active{% endif %}">{{ label }}</a>
+            {% endfor %}
+        </div>
+
+        {% if properties %}
+        <div class="listings-grid">
+            {% for property in properties %}
+            <div class="listing-card">
+                <a href="{% url 'property_detail' property.pk %}" class="listing-card-link">
+                    <div class="listing-img-wrap">
+                        {% if property.main_image %}
+                        <img src="{{ property.main_image.url }}" alt="{{ property.title }}" loading="lazy">
+                        {% else %}
+                        <img src="{% static 'events/img/flyer1.jpeg' %}" alt="{{ property.title }}" loading="lazy">
+                        {% endif %}
+                        <span class="listing-badge status-{{ property.status }}">{{ property.get_status_display }}</span>
+                    </div>
+                    <div class="listing-body">
+                        <div class="listing-type">{{ property.get_property_type_display }}</div>
+                        <div class="listing-name">{{ property.title }}</div>
+                        <div class="listing-location">📍 {{ property.location }}</div>
+                        {% if property.bedrooms or property.bathrooms or property.size %}
+                        <div class="listing-specs">
+                            {% if property.bedrooms %}<span>🛏️ {{ property.bedrooms }} beds</span>{% endif %}
+                            {% if property.bathrooms %}<span>🛁 {{ property.bathrooms }} baths</span>{% endif %}
+                            {% if property.size %}<span>📐 {{ property.size }}</span>{% endif %}
+                        </div>
+                        {% endif %}
+                        <div class="listing-footer">
+                            <span class="listing-price">{{ property.get_display_price }}</span>
+                            <span class="listing-enquire">View Details →</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-results">
+            <h3>No properties found</h3>
+            <p>Try a different category, or check back soon — new listings are added regularly.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

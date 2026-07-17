@@ -43,6 +43,11 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 0 0 rgba(0,0,0,0);
+            transition: box-shadow 0.35s ease;
+        }
+        nav.scrolled {
+            box-shadow: 0 6px 24px rgba(0,0,0,0.18);
         }
         .nav-logo {
             display: flex;
@@ -55,7 +60,9 @@
             height: 42px;
             width: auto;
             filter: brightness(0) invert(1);
+            transition: transform 0.35s cubic-bezier(.16,.84,.44,1);
         }
+        .nav-logo:hover .nav-logo-img { transform: scale(1.06) rotate(-1deg); }
         .nav-brand {
             font-family: 'Playfair Display', serif;
             font-size: 1.1rem;
@@ -79,12 +86,23 @@
             align-items: center;
         }
         .nav-links a {
+            position: relative;
             color: rgba(255,255,255,0.8);
             text-decoration: none;
             font-size: 0.875rem;
             font-weight: 500;
             transition: color 0.2s;
         }
+        .nav-links a:not(.nav-cta)::after {
+            content: '';
+            position: absolute;
+            left: 0; bottom: -6px;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.28s cubic-bezier(.16,.84,.44,1);
+        }
+        .nav-links a:not(.nav-cta):hover::after { width: 100%; }
         .nav-links a:hover { color: var(--gold); }
         .nav-cta {
             background: var(--gold) !important;
@@ -93,7 +111,9 @@
             border-radius: 4px;
             font-weight: 600 !important;
             white-space: nowrap;
+            transition: transform 0.25s cubic-bezier(.16,.84,.44,1), background 0.2s;
         }
+        .nav-cta:hover { transform: translateY(-2px); }
 
         /* NAV — MOBILE HAMBURGER */
         .nav-toggle {
@@ -139,7 +159,7 @@
                 transition: max-height 0.3s ease;
                 box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             }
-            .nav-links.open { max-height: 320px; }
+            .nav-links.open { max-height: 380px; }
             .nav-links li { width: 100%; }
             .nav-links a {
                 display: block;
@@ -188,24 +208,116 @@
             text-decoration: none;
             cursor: pointer;
             border: none;
-            transition: all 0.2s;
+            transition: transform 0.25s cubic-bezier(.16,.84,.44,1), box-shadow 0.25s ease, background 0.2s, color 0.2s;
         }
         .btn-gold {
             background: var(--gold);
             color: var(--forest);
         }
-        .btn-gold:hover { background: var(--gold-light); }
+        .btn-gold:hover { background: var(--gold-light); transform: translateY(-3px); box-shadow: 0 10px 24px rgba(201,168,76,0.35); }
         .btn-outline {
             background: transparent;
             border: 2px solid var(--gold);
             color: var(--gold);
         }
-        .btn-outline:hover { background: var(--gold); color: var(--forest); }
+        .btn-outline:hover { background: var(--gold); color: var(--forest); transform: translateY(-3px); box-shadow: 0 10px 24px rgba(201,168,76,0.2); }
+        .btn:active { transform: translateY(-1px) scale(0.98); }
 
         @media (max-width: 600px) {
             .container { padding: 0 1.25rem; }
             footer { padding: 2rem 1.25rem; }
             .btn { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
+        }
+
+        /* ============================================
+           MOTION / ANIMATIONS — site-wide
+           ============================================ */
+
+        /* Image zoom-on-hover — applies wherever these classes appear */
+        .listing-img-wrap,
+        .event-card-img,
+        .pd-main-img,
+        .pd-gallery-thumb {
+            overflow: hidden;
+        }
+        .listing-img-wrap img,
+        .pd-main-img img,
+        .pd-gallery-thumb img {
+            transition: transform 0.6s cubic-bezier(.16,.84,.44,1);
+        }
+        .listing-card:hover .listing-img-wrap img,
+        .pd-main-img:hover img,
+        .pd-gallery-thumb:hover img {
+            transform: scale(1.08);
+        }
+        .event-card-img {
+            transition: transform 0.6s cubic-bezier(.16,.84,.44,1);
+        }
+        .event-card:hover .event-card-img {
+            transform: scale(1.04);
+        }
+
+        /* Card lift polish — smoother easing on existing hover-lift cards */
+        .listing-card,
+        .wwd-card,
+        .event-card {
+            transition: transform 0.4s cubic-bezier(.16,.84,.44,1), box-shadow 0.4s cubic-bezier(.16,.84,.44,1);
+        }
+
+        /* Icon micro-interactions */
+        .wwd-icon,
+        .why-icon,
+        .edl-icon,
+        .cdl-icon {
+            transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+        }
+        .wwd-card:hover .wwd-icon { transform: scale(1.12) rotate(-4deg); }
+        .why-item:hover .why-icon { transform: scale(1.12) rotate(4deg); }
+        .event-detail-item:hover .edl-icon,
+        .contact-detail-item:hover .cdl-icon { transform: scale(1.1); }
+
+        /* Form input focus lift */
+        .form-input {
+            transition: border-color 0.2s, box-shadow 0.25s cubic-bezier(.16,.84,.44,1), transform 0.2s ease;
+        }
+        .form-input:focus { transform: translateY(-1px); }
+
+        /* Ticket / success state pop-in */
+        @keyframes swPopIn {
+            0% { opacity: 0; transform: scale(0.5); }
+            70% { opacity: 1; transform: scale(1.08); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .success-icon {
+            animation: swPopIn 0.6s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        @keyframes swFadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ticket-wrapper .ticket {
+            animation: swFadeUp 0.7s cubic-bezier(.16,.84,.44,1) both;
+            animation-delay: 0.15s;
+        }
+
+        /* Scroll-reveal engine — JS adds .reveal to targets, then .in-view on scroll-into-view */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(.16,.84,.44,1), transform 0.7s cubic-bezier(.16,.84,.44,1);
+        }
+        .reveal.in-view {
+            opacity: 1;
+            transform: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+            .reveal { opacity: 1; transform: none; }
         }
     </style>
     {% block extra_styles %}{% endblock %}
@@ -217,9 +329,10 @@
         </a>
         <ul class="nav-links" id="navLinks">
             <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'home' %}#tickets">Tickets</a></li>
-            <li><a href="{% url 'home' %}#contact">Enquiries</a></li>
-            <li><a href="{% url 'register' %}" class="nav-cta">Register Now</a></li>
+            <li><a href="{% url 'properties' %}">Properties</a></li>
+            <li><a href="{% url 'event_home' %}">Upcoming Events</a></li>
+            <li><a href="{% url 'about_us' %}">About Us</a></li>
+            <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
         </ul>
         <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
             <span></span><span></span><span></span>
@@ -244,6 +357,58 @@
                 });
             });
         })();
+
+        // NAV SCROLL SHADOW
+        (function () {
+            var nav = document.querySelector('nav');
+            if (!nav) return;
+            var onScroll = function () {
+                nav.classList.toggle('scrolled', window.scrollY > 8);
+            };
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+        })();
+
+        // SCROLL-REVEAL ENGINE — auto-animates sections/cards site-wide as they enter view
+        (function () {
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduceMotion) return;
+
+            var selectors = [
+                '.ch-hero-eyebrow', '.ch-hero h1', '.ch-hero-tagline', '.ch-hero-actions',
+                '.ch-label', '.ch-title', '.ch-sub',
+                '.wwd-card', '.listing-card', '.event-card', '.why-item',
+                '.contact-detail-item', '.event-detail-item',
+                '.story-text', '.about-cta-actions',
+                '.vendor-card', '.page-header-content > *',
+                '.help-banner', '.pd-layout > *', '.pd-related',
+                '.form-heading', '.form-sub', '.reg-left-content > *', '.contact-left-content > *',
+                '.messages', '.visit-box', '.success-banner > *'
+            ];
+
+            var els = document.querySelectorAll(selectors.join(','));
+            if (!els.length) return;
+
+            var parentCounts = new Map();
+            els.forEach(function (el) {
+                el.classList.add('reveal');
+                var parent = el.parentElement;
+                var idx = parentCounts.get(parent) || 0;
+                el.style.transitionDelay = Math.min(idx * 90, 450) + 'ms';
+                parentCounts.set(parent, idx + 1);
+            });
+
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+            els.forEach(function (el) { observer.observe(el); });
+        })();
     </script>
 
     {% block content %}{% endblock %}
@@ -251,7 +416,8 @@
     <footer>
         <img src="{% static 'events/img/logo.png' %}" alt="Savannah Woodlands" style="height:60px;width:auto;filter:brightness(0) invert(1);margin-bottom:0.75rem;">
         <div class="footer-contact">
-            <p>📞 <a href="tel:+2349015948870">+234 901 594 8870</a> &nbsp;|&nbsp; <a href="tel:+2349011229236">+234 901 122 9236</a> &nbsp;|&nbsp; ✉ <a href="mailto:info@savannahwoodlands.com">info@savannahwoodlands.com</a></p>
+            <p>📍 Plot 123 Mohammadu Buhari Way, Central Business District, Abuja</p>
+            <p style="margin-top:0.5rem;">📞 <a href="tel:+2349015948870">+234 901 594 8870</a> &nbsp;|&nbsp; <a href="tel:+2349011229236">+234 901 122 9236</a> &nbsp;|&nbsp; ✉ <a href="mailto:info@savannahwoodlands.com">info@savannahwoodlands.com</a></p>
             <p style="margin-top:1rem;font-size:0.75rem;opacity:0.5;">© 2026 Savannah Woodlands Ltd. All rights reserved.</p>
         </div>
     </footer>

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 import uuid
 
 
@@ -94,3 +95,101 @@ class VendorMedia(models.Model):
 
     def __str__(self):
         return f'{self.media_type} for {self.vendor_application}'
+
+
+class ContactMessage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    full_name = models.CharField(max_length=200)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+    message = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-submitted_at']
+
+    def __str__(self):
+        return f'{self.full_name} — {self.submitted_at:%d %b %Y}'
+
+
+class Property(models.Model):
+    PROPERTY_TYPES = [
+        ('land', 'Land'),
+        ('agricultural_land', 'Agricultural Land'),
+        ('duplex', 'Duplex'),
+        ('detached_house', 'Detached House'),
+        ('bungalow', 'Bungalow'),
+        ('terrace', 'Terrace House'),
+        ('apartment', 'Apartment / Flat'),
+        ('commercial', 'Commercial Property'),
+    ]
+    STATUS_CHOICES = [
+        ('for_sale', 'For Sale'),
+        ('new_development', 'New Development'),
+        ('under_offer', 'Under Offer'),
+        ('sold', 'Sold'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=200)
+    property_type = models.CharField(max_length=30, choices=PROPERTY_TYPES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='for_sale')
+    location = models.CharField(max_length=300)
+    description = models.TextField(blank=True)
+    bedrooms = models.PositiveIntegerField(blank=True, null=True)
+    bathrooms = models.PositiveIntegerField(blank=True, null=True)
+    size = models.CharField(max_length=100, blank=True, help_text='e.g. 650 sqm, 2 plots')
+    price = models.CharField(max_length=100, blank=True, help_text='e.g. ₦45,000,000')
+    price_on_request = models.BooleanField(default=False)
+    main_image = models.ImageField(upload_to='properties/main/')
+    is_featured = models.BooleanField(default=False, help_text='Show this property on the homepage')
+    is_active = models.BooleanField(default=True, help_text='Uncheck to hide without deleting')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name_plural = 'Properties'
+
+    def __str__(self):
+        return self.title
+
+    def get_display_price(self):
+        if self.price_on_request or not self.price:
+            return 'Price on request'
+        return self.price
+
+    def get_absolute_url(self):
+        return reverse('property_detail', kwargs={'pk': self.pk})
+
+
+def property_media_path(instance, filename):
+    return f'properties/media/{instance.property.pk}/{filename}'
+
+
+class PropertyMedia(models.Model):
+    MEDIA_TYPES = [
+        ('image', 'Image'),
+        ('video', 'Video'),
+    ]
+    VIDEO_EXTENSIONS = ('.mp4', '.mov', '.webm', '.avi', '.mkv', '.m4v')
+
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='media_files')
+    file = models.FileField(upload_to=property_media_path, help_text='Upload a photo or a video clip')
+    media_type = models.CharField(max_length=10, choices=MEDIA_TYPES, blank=True)
+    caption = models.CharField(max_length=200, blank=True)
+    order = models.PositiveIntegerField(default=0, help_text='Lower numbers appear first')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'uploaded_at']
+
+    def save(self, *args, **kwargs):
+        if not self.media_type and self.file:
+            name = self.file.name.lower()
+            self.media_type = 'video' if name.endswith(self.VIDEO_EXTENSIONS) else 'image'
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.get_media_type_display()} for {self.property.title}'

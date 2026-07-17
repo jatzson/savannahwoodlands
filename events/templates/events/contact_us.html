@@ -1,0 +1,165 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block title %}Contact Us — Savannah Woodlands{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .contact-page { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+
+    .contact-left {
+        background: var(--forest);
+        padding: 5rem 4rem;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .contact-left-bg {
+        position: absolute; inset: 0;
+        background-image: url("{% static 'events/img/fly6.jpeg' %}");
+        background-size: cover; background-position: center;
+        opacity: 0.15;
+    }
+    .contact-left-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(26,58,46,0.6) 0%, rgba(10,25,19,0.92) 100%);
+    }
+    .contact-left-content { position: relative; z-index: 2; }
+    .contact-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
+    .contact-left h2 { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 1rem; }
+    .contact-left .tagline { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 2.5rem; line-height: 1.6; border-left: 2px solid var(--gold); padding-left: 0.85rem; }
+
+    .contact-detail-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; }
+    .contact-detail-item { display: flex; align-items: flex-start; gap: 1rem; padding-bottom: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .contact-detail-item:last-child { border-bottom: none; }
+    .cdl-icon { width: 38px; height: 38px; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0; }
+    .cdl-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+    .cdl-value { color: var(--white); font-size: 0.88rem; font-weight: 500; }
+    .cdl-value a { color: var(--white); text-decoration: none; }
+
+    .contact-right { background: var(--cream); padding: 5rem 4rem; display: flex; flex-direction: column; justify-content: center; }
+    .form-heading { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--forest); margin-bottom: 0.4rem; }
+    .form-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 2.5rem; }
+    .form-group { margin-bottom: 1.4rem; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--forest); margin-bottom: 0.45rem; }
+    .form-input { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem; font-family: 'Inter', sans-serif; background: var(--white); color: var(--charcoal); transition: border-color 0.2s, box-shadow 0.2s; outline: none; resize: vertical; }
+    .form-input:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(26,58,46,0.08); }
+    .form-input.error { border-color: #dc2626; }
+    .field-errors { list-style: none; }
+    .field-errors li { color: #dc2626; font-size: 0.8rem; margin-top: 0.3rem; }
+
+    .submit-btn { width: 100%; padding: 1rem; background: var(--forest); color: var(--white); border: none; border-radius: 6px; font-size: 1rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s; margin-top: 1rem; }
+    .submit-btn:hover { background: #0f2419; }
+
+    .messages { list-style: none; margin-bottom: 1.5rem; }
+    .messages li { padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; }
+    .messages li.success { background: #f0f7f4; color: var(--forest); border: 1px solid #b8ddd0; }
+    .messages li.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+    @media (max-width: 900px) {
+        .contact-page { grid-template-columns: 1fr; }
+        .contact-left { padding: 4rem 2rem 3rem; }
+        .contact-right { padding: 3rem 2rem; }
+        .contact-left h2 { font-size: 2rem; }
+    }
+    @media (max-width: 480px) {
+        .contact-left, .contact-right { padding-left: 1.25rem; padding-right: 1.25rem; }
+        .form-heading { font-size: 1.6rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-page">
+    <!-- LEFT -->
+    <div class="contact-left">
+        <div class="contact-left-bg"></div>
+        <div class="contact-left-overlay"></div>
+        <div class="contact-left-content">
+            <div class="contact-eyebrow">Get In Touch</div>
+            <h2>We'd Love To Hear From You</h2>
+            <p class="tagline">Have a question about a listing, an event, or just want to say hello? Reach us now.</p>
+
+            <ul class="contact-detail-list">
+                <li class="contact-detail-item">
+                    <div class="cdl-icon">📞</div>
+                    <div>
+                        <div class="cdl-label">Phone</div>
+                        <div class="cdl-value">
+                            <a href="tel:+2349015948870">+234 901 594 8870</a><br>
+                            <a href="tel:+2349011229236">+234 901 122 9236</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="contact-detail-item">
+                    <div class="cdl-icon">✉️</div>
+                    <div>
+                        <div class="cdl-label">Email</div>
+                        <div class="cdl-value"><a href="mailto:info@savannahwoodlands.com">info@savannahwoodlands.com</a></div>
+                    </div>
+                </li>
+                <li class="contact-detail-item">
+                    <div class="cdl-icon">🕐</div>
+                    <div>
+                        <div class="cdl-label">Response Time</div>
+                        <div class="cdl-value">We typically reply within 1 business day</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="contact-right">
+        <div class="form-heading">Send Us A Message</div>
+        <p class="form-sub">Fill in the form below and we'll get back to you shortly.</p>
+
+        {% if messages %}
+        <ul class="messages">{% for msg in messages %}<li class="{{ msg.tags }}">{{ msg }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_full_name">Full Name</label>
+                <input type="text" name="full_name" id="id_full_name"
+                       class="form-input {% if form.full_name.errors %}error{% endif %}"
+                       placeholder="Enter your full name"
+                       value="{{ form.full_name.value|default:'' }}">
+                {% if form.full_name.errors %}<ul class="field-errors">{% for e in form.full_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">Email Address</label>
+                <input type="email" name="email" id="id_email"
+                       class="form-input {% if form.email.errors %}error{% endif %}"
+                       placeholder="your@email.com"
+                       value="{{ form.email.value|default:'' }}">
+                {% if form.email.errors %}<ul class="field-errors">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_phone">Phone Number <span style="text-transform:none;font-weight:400;color:var(--muted);">(optional)</span></label>
+                <input type="tel" name="phone" id="id_phone"
+                       class="form-input {% if form.phone.errors %}error{% endif %}"
+                       placeholder="+234 800 000 0000"
+                       value="{{ form.phone.value|default:'' }}">
+                {% if form.phone.errors %}<ul class="field-errors">{% for e in form.phone.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_message">Message</label>
+                <textarea name="message" id="id_message" rows="5"
+                       class="form-input {% if form.message.errors %}error{% endif %}"
+                       placeholder="How can we help?">{{ form.message.value|default:'' }}</textarea>
+                {% if form.message.errors %}<ul class="field-errors">{% for e in form.message.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <button type="submit" class="submit-btn">Send Message →</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
