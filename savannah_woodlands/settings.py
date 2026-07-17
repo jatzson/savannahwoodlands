@@ -35,7 +35,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# CompressedManifestStaticFilesStorage hashes filenames for cache-busting,
+# but that requires resolving every url()/@import reference inside every
+# collected CSS/JS file — including ones from third-party packages
+# (Cloudinary's admin widget, Django admin's bundled GIS icons, etc.) whose
+# referenced assets don't actually exist in this environment. Any single
+# missing reference hard-fails the whole build. CompressedStaticFilesStorage
+# still gzip/brotli-compresses everything for performance, it just skips
+# the fragile hashing/rewriting step, so one missing third-party asset
+# can't take down the entire deploy.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 ROOT_URLCONF = 'savannah_woodlands.urls'
 
@@ -63,6 +72,14 @@ DATABASES = {
         conn_max_age=600,
     )
 }
+
+# SQLite locks the whole file during writes. Cloudinary uploads (property
+# photos/videos) can take several seconds over the network, so without a
+# longer busy timeout any second request that touches the DB in that window
+# fails immediately with "database is locked" instead of just waiting.
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    DATABASES['default'].setdefault('OPTIONS', {})
+    DATABASES['default']['OPTIONS']['timeout'] = 20
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Africa/Lagos'
