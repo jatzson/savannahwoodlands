@@ -74,12 +74,18 @@ STATICFILES_DIRS = []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('mpjyr8mx'),
-    'API_KEY': os.environ.get('422133976896593'),
-    'API_SECRET': os.environ.get('D9_C4WYsEssH66t0XJnLaca55Kc'),
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# django-cloudinary-storage ships static assets that reference a JS file
+# (jquery.fileupload-validate.js) which isn't actually included in the
+# package. Whitenoise's manifest storage fails collectstatic when it can't
+# resolve that reference. This tells it to warn instead of hard-fail.
+WHITENOISE_MANIFEST_STRICT = False
 
 
 MEDIA_URL = '/media/'

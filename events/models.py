@@ -8,12 +8,17 @@ class Registration(models.Model):
         ('ticket', 'Ticket - ₦35,000'),
         ('vendor', 'Vendorship Participation - ₦250,000'),
     ]
+    PAYMENT_STATUS = [
+        ('pending', 'Pending Payment'),
+        ('confirmed', 'Payment Confirmed'),
+    ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     full_name = models.CharField(max_length=200)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
     ticket_type = models.CharField(max_length=20, choices=TICKET_TYPES, default='ticket')
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
     registered_at = models.DateTimeField(auto_now_add=True)
     ticket_number = models.CharField(max_length=20, unique=True, blank=True)
     qr_code = models.ImageField(upload_to='tickets/qr/', blank=True)
@@ -24,7 +29,9 @@ class Registration(models.Model):
             short = str(self.id).upper()[:8]
             self.ticket_number = f'SW-{prefix}-{short}'
         super().save(*args, **kwargs)
-        if not self.qr_code:
+        # QR code is only generated once payment has been confirmed by staff,
+        # so a scannable ticket never exists before the payment is verified.
+        if self.payment_status == 'confirmed' and not self.qr_code:
             self._generate_qr()
 
     def _generate_qr(self):

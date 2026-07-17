@@ -25,11 +25,20 @@ class VendorApplicationAdmin(admin.ModelAdmin):
 
 @admin.register(Registration)
 class RegistrationAdmin(admin.ModelAdmin):
-    list_display = ['ticket_number', 'full_name', 'email', 'phone', 'ticket_type', 'registered_at']
-    list_filter = ['ticket_type', 'registered_at']
+    list_display = ['ticket_number', 'full_name', 'email', 'phone', 'ticket_type', 'payment_status', 'registered_at']
+    list_filter = ['payment_status', 'ticket_type', 'registered_at']
     search_fields = ['full_name', 'email', 'ticket_number', 'phone']
+    list_editable = ['payment_status']
     readonly_fields = ['id', 'ticket_number', 'qr_code', 'registered_at']
     ordering = ['-registered_at']
+    actions = ['mark_payment_confirmed']
+
+    @admin.action(description='Mark selected registrations as payment confirmed')
+    def mark_payment_confirmed(self, request, queryset):
+        for reg in queryset:
+            reg.payment_status = 'confirmed'
+            reg.save()
+        self.message_user(request, f'{queryset.count()} registration(s) confirmed — QR codes generated.')
 
 
 @admin.register(ContactMessage)
