@@ -15,7 +15,7 @@
     }
     .page-header-bg {
         position: absolute; inset: 0;
-        background-image: url("{% static 'events/img/flyer1.jpeg' %}");
+        background-image: url("https://res.cloudinary.com/mpjyr8mx/image/upload/v1784331001/flyer1_adidlm.jpg");
         background-size: cover; background-position: center;
         opacity: 0.2;
     }
@@ -127,7 +127,7 @@
                         {% if property.main_image %}
                         <img src="{{ property.main_image.url }}" alt="{{ property.title }}" loading="lazy">
                         {% else %}
-                        <img src="{% static 'events/img/flyer1.jpeg' %}" alt="{{ property.title }}" loading="lazy">
+                        <img src="https://res.cloudinary.com/mpjyr8mx/image/upload/v1784331001/flyer1_adidlm.jpg" alt="{{ property.title }}" loading="lazy">
                         {% endif %}
                         <span class="listing-badge status-{{ property.status }}">{{ property.get_status_display }}</span>
                     </div>

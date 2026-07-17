@@ -110,7 +110,7 @@
                     {% if property.main_image %}
                     <img id="pdMainImg" src="{{ property.main_image.url }}" alt="{{ property.title }}">
                     {% else %}
-                    <img id="pdMainImg" src="{% static 'events/img/flyer1.jpeg' %}" alt="{{ property.title }}">
+                    <img id="pdMainImg" src="https://res.cloudinary.com/mpjyr8mx/image/upload/v1784331001/flyer1_adidlm.jpg" alt="{{ property.title }}">
                     {% endif %}
                     <video id="pdMainVideo" playsinline style="display:none;"></video>
                     <div class="pd-main-play-badge hidden" id="pdPlayBadge">▶</div>
@@ -186,7 +186,7 @@
                             {% if rp.main_image %}
                             <img src="{{ rp.main_image.url }}" alt="{{ rp.title }}">
                             {% else %}
-                            <img src="{% static 'events/img/flyer1.jpeg' %}" alt="{{ rp.title }}">
+                            <img src="https://res.cloudinary.com/mpjyr8mx/image/upload/v1784331001/flyer1_adidlm.jpg" alt="{{ rp.title }}">
                             {% endif %}
                         </div>
                         <div class="listing-body">

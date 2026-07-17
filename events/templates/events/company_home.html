@@ -17,7 +17,7 @@
     .ch-hero-bg {
         position: absolute;
         inset: 0;
-        background-image: url("{% static 'events/img/fly1.jpeg' %}");
+        background-image: url("https://res.cloudinary.com/mpjyr8mx/image/upload/v1784330998/fly1_cq8skj.jpg");
         background-size: cover;
         background-position: center;
         opacity: 0.4;
@@ -124,7 +124,7 @@
     .event-card-img {
         position: relative;
         min-height: 320px;
-        background-image: url("{% static 'events/img/flyer1.jpeg' %}");
+        background-image: url("https://res.cloudinary.com/mpjyr8mx/image/upload/v1784331001/flyer1_adidlm.jpg");
         background-size: cover;
         background-position: center top;
     }
@@ -334,7 +334,7 @@ Designed as an exclusive access experience, the event showcases residential, com
                         {% if property.main_image %}
                         <img src="{{ property.main_image.url }}" alt="{{ property.title }}" loading="lazy">
                         {% else %}
-                        <img src="{% static 'events/img/flyer1.jpeg' %}" alt="{{ property.title }}" loading="lazy">
+                        <img src="https://res.cloudinary.com/mpjyr8mx/image/upload/v1784331001/flyer1_adidlm.jpg" alt="{{ property.title }}" loading="lazy">
                         {% endif %}
                         <span class="listing-badge">{{ property.get_status_display }}</span>
                     </div>
