@@ -44,7 +44,7 @@ MIDDLEWARE = [
 # still gzip/brotli-compresses everything for performance, it just skips
 # the fragile hashing/rewriting step, so one missing third-party asset
 # can't take down the entire deploy.
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 ROOT_URLCONF = 'savannah_woodlands.urls'
 
