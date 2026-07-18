@@ -1,0 +1,135 @@
+{% extends 'events/dashboard/base_dashboard.html' %}
+
+{% block title %}Overview{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; margin-bottom: 2.25rem; }
+    .stat-card { padding: 1.35rem 1.5rem; }
+    .stat-icon { font-size: 1.3rem; margin-bottom: 0.6rem; }
+    .stat-value { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; color: var(--forest); }
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+    .stat-card.alert .stat-value { color: var(--amber); }
+
+    .dash-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; align-items: start; }
+    .panel { padding: 1.5rem 1.6rem; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem; }
+    .panel-head h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--forest); }
+    .panel-head a { font-size: 0.78rem; font-weight: 600; color: var(--gold); text-decoration: none; }
+
+    .reg-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.7rem 0; border-bottom: 1px solid var(--border); }
+    .reg-row:last-child { border-bottom: none; }
+    .reg-name { font-weight: 600; font-size: 0.85rem; color: var(--forest); }
+    .reg-meta { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+
+    .msg-row { padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+    .msg-row:last-child { border-bottom: none; }
+    .msg-name { font-weight: 600; font-size: 0.85rem; color: var(--forest); }
+    .msg-preview { font-size: 0.8rem; color: var(--muted); margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    @media (max-width: 1100px) {
+        .stats-grid { grid-template-columns: 1fr 1fr; }
+        .dash-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+        .stats-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Overview</h1>
+        <p>A snapshot of everything happening across your site.</p>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="card stat-card">
+        <div class="stat-icon">🏘️</div>
+        <div class="stat-value">{{ stats.active_properties }}</div>
+        <div class="stat-label">Active Properties ({{ stats.total_properties }} total)</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value">{{ stats.featured_properties }}</div>
+        <div class="stat-label">Featured on Homepage</div>
+    </div>
+    <div class="card stat-card {% if stats.pending_payments %}alert{% endif %}">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value">{{ stats.pending_payments }}</div>
+        <div class="stat-label">Pending Payment Confirmations</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon">✓</div>
+        <div class="stat-value">{{ stats.confirmed_payments }}</div>
+        <div class="stat-label">Confirmed Registrations</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon">🎫</div>
+        <div class="stat-value">{{ stats.total_registrations }}</div>
+        <div class="stat-label">Total Registrations</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon">🏢</div>
+        <div class="stat-value">{{ stats.vendor_applications }}</div>
+        <div class="stat-label">Vendor Applications</div>
+    </div>
+    <div class="card stat-card {% if stats.unread_messages %}alert{% endif %}">
+        <div class="stat-icon">✉️</div>
+        <div class="stat-value">{{ stats.unread_messages }}</div>
+        <div class="stat-label">Unread Messages</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon">➕</div>
+        <a href="{% url 'dashboard_property_add' %}" style="text-decoration:none;">
+            <div class="stat-value" style="font-size:1.05rem;">Add Property</div>
+            <div class="stat-label">Create a new listing</div>
+        </a>
+    </div>
+</div>
+
+<div class="dash-grid">
+    <div class="card panel">
+        <div class="panel-head">
+            <h3>Recent Registrations</h3>
+            <a href="{% url 'dashboard_registrations' %}">View all →</a>
+        </div>
+        {% if recent_registrations %}
+        {% for reg in recent_registrations %}
+        <div class="reg-row">
+            <div>
+                <div class="reg-name">{{ reg.full_name }}</div>
+                <div class="reg-meta">{{ reg.ticket_number }} · {{ reg.get_ticket_type_display }}</div>
+            </div>
+            {% if reg.payment_status == 'confirmed' %}
+            <span class="badge badge-green">Paid</span>
+            {% else %}
+            <span class="badge badge-amber">Pending</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state"><div class="es-icon">🎫</div>No registrations yet.</div>
+        {% endif %}
+    </div>
+
+    <div class="card panel">
+        <div class="panel-head">
+            <h3>Unread Messages</h3>
+            <a href="{% url 'dashboard_messages' %}">View all →</a>
+        </div>
+        {% if recent_messages %}
+        {% for msg in recent_messages %}
+        <div class="msg-row">
+            <div class="msg-name">{{ msg.full_name }}</div>
+            <div class="msg-preview">{{ msg.message }}</div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state"><div class="es-icon">✉️</div>No unread messages.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

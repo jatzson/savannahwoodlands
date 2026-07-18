@@ -1,0 +1,96 @@
+{% extends 'events/dashboard/base_dashboard.html' %}
+
+{% block title %}Vendor Applications{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .vendor-card { padding: 1.5rem 1.75rem; margin-bottom: 1rem; }
+    .vendor-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .vendor-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--forest); font-weight: 700; }
+    .vendor-sub { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+    .vendor-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem 1.5rem; margin-bottom: 1rem; }
+    .vd-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+    .vd-value { font-size: 0.88rem; color: var(--forest); font-weight: 600; }
+
+    .vendor-notes { font-size: 0.85rem; color: var(--charcoal); background: var(--cream); padding: 0.85rem 1rem; border-radius: 6px; margin-top: 0.5rem; }
+
+    @media (max-width: 800px) {
+        .vendor-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+        .vendor-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Vendor Applications</h1>
+        <p>{{ vendors.count }} vendor application{{ vendors.count|pluralize }} submitted for the event.</p>
+    </div>
+</div>
+
+{% if vendors %}
+{% for vendor in vendors %}
+<div class="card vendor-card">
+    <div class="vendor-head">
+        <div>
+            <div class="vendor-name">{{ vendor.company_name }}</div>
+            <div class="vendor-sub">{{ vendor.registration.full_name }} · {{ vendor.registration.email }} · {{ vendor.registration.phone }}</div>
+        </div>
+        {% if vendor.registration.payment_status == 'confirmed' %}
+        <span class="badge badge-green">Payment Confirmed</span>
+        {% else %}
+        <span class="badge badge-amber">Payment Pending</span>
+        {% endif %}
+    </div>
+
+    <div class="vendor-grid">
+        <div>
+            <div class="vd-label">Designation</div>
+            <div class="vd-value">{{ vendor.get_designation_display }}</div>
+        </div>
+        <div>
+            <div class="vd-label">Property Type</div>
+            <div class="vd-value">{{ vendor.property_type }}</div>
+        </div>
+        <div>
+            <div class="vd-label">Location</div>
+            <div class="vd-value">{{ vendor.location }}</div>
+        </div>
+        <div>
+            <div class="vd-label">Title / Document</div>
+            <div class="vd-value">{{ vendor.title }}</div>
+        </div>
+        <div>
+            <div class="vd-label">Open Market Price</div>
+            <div class="vd-value">{{ vendor.open_market_price }}</div>
+        </div>
+        <div>
+            <div class="vd-label">Event-Only Price</div>
+            <div class="vd-value">{{ vendor.event_only_price }}</div>
+        </div>
+        <div>
+            <div class="vd-label">Media Files</div>
+            <div class="vd-value">{{ vendor.media_files.count }} uploaded</div>
+        </div>
+        <div>
+            <div class="vd-label">Submitted</div>
+            <div class="vd-value">{{ vendor.submitted_at|date:"d M Y" }}</div>
+        </div>
+    </div>
+
+    {% if vendor.additional_notes %}
+    <div class="vendor-notes">{{ vendor.additional_notes }}</div>
+    {% endif %}
+</div>
+{% endfor %}
+{% else %}
+<div class="card empty-state">
+    <div class="es-icon">🏢</div>
+    No vendor applications yet.
+</div>
+{% endif %}
+{% endblock %}

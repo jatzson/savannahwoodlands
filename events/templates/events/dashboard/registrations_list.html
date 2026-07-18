@@ -1,0 +1,106 @@
+{% extends 'events/dashboard/base_dashboard.html' %}
+
+{% block title %}Registrations{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-chip {
+        padding: 0.45rem 0.95rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+        text-decoration: none; border: 1.5px solid var(--border); color: var(--forest); background: var(--white);
+    }
+    .filter-chip.active { background: var(--forest); border-color: var(--forest); color: var(--white); }
+    .search-form { display: flex; gap: 0.5rem; }
+    .search-input { padding: 0.55rem 0.9rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.85rem; width: 220px; font-family: inherit; }
+
+    .name-cell { font-weight: 600; color: var(--forest); }
+    .sub-cell { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+    .ticket-no { font-family: 'Courier New', monospace; font-size: 0.8rem; }
+
+    @media (max-width: 800px) {
+        .table-scroll { overflow-x: auto; }
+        table { min-width: 760px; }
+        .search-input { width: 150px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Registrations</h1>
+        <p>{{ registrations.count }} registration{{ registrations.count|pluralize }} total.</p>
+    </div>
+</div>
+
+<div class="toolbar">
+    <div class="filter-chips">
+        <a href="{% url 'dashboard_registrations' %}" class="filter-chip {% if not status_filter and not type_filter %}active{% endif %}">All</a>
+        <a href="?status=pending" class="filter-chip {% if status_filter == 'pending' %}active{% endif %}">Pending Payment</a>
+        <a href="?status=confirmed" class="filter-chip {% if status_filter == 'confirmed' %}active{% endif %}">Confirmed</a>
+        <a href="?type=vendor" class="filter-chip {% if type_filter == 'vendor' %}active{% endif %}">Vendors</a>
+        <a href="?type=ticket" class="filter-chip {% if type_filter == 'ticket' %}active{% endif %}">Attendees</a>
+    </div>
+    <form method="get" class="search-form">
+        <input type="text" name="q" value="{{ q }}" placeholder="Name, email, ticket #..." class="search-input">
+        <button type="submit" class="btn btn-outline btn-sm">Search</button>
+    </form>
+</div>
+
+<div class="card">
+    {% if registrations %}
+    <div class="table-scroll">
+    <table>
+        <thead>
+            <tr>
+                <th>Attendee</th>
+                <th>Ticket #</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Payment</th>
+                <th>Registered</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reg in registrations %}
+            <tr>
+                <td>
+                    <div class="name-cell">{{ reg.full_name }}</div>
+                    <div class="sub-cell">{{ reg.email }} · {{ reg.phone }}</div>
+                </td>
+                <td class="ticket-no">{{ reg.ticket_number }}</td>
+                <td>{{ reg.get_ticket_type_display }}</td>
+                <td>{{ reg.get_ticket_price }}</td>
+                <td>
+                    {% if reg.payment_status == 'confirmed' %}
+                    <span class="badge badge-green">✓ Confirmed</span>
+                    {% else %}
+                    <span class="badge badge-amber">Pending</span>
+                    {% endif %}
+                </td>
+                <td class="sub-cell">{{ reg.registered_at|date:"d M Y, H:i" }}</td>
+                <td>
+                    {% if reg.payment_status == 'pending' %}
+                    <form method="post" action="{% url 'dashboard_registration_confirm' reg.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-gold btn-sm">Confirm Payment</button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'ticket' reg.pk %}" target="_blank" class="btn btn-outline btn-sm">View Ticket</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="es-icon">🎫</div>
+        No registrations match this view.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

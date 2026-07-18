@@ -1,0 +1,131 @@
+{% extends 'events/dashboard/base_dashboard.html' %}
+
+{% block title %}Properties{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-chip {
+        padding: 0.45rem 0.95rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+        text-decoration: none; border: 1.5px solid var(--border); color: var(--forest); background: var(--white);
+    }
+    .filter-chip.active { background: var(--forest); border-color: var(--forest); color: var(--white); }
+    .search-form { display: flex; gap: 0.5rem; }
+    .search-input { padding: 0.55rem 0.9rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.85rem; width: 220px; font-family: inherit; }
+
+    .prop-thumb { width: 52px; height: 52px; border-radius: 6px; object-fit: cover; background: var(--cream); }
+    .prop-title-cell { display: flex; align-items: center; gap: 0.75rem; }
+    .prop-title-text { font-weight: 600; color: var(--forest); }
+    .prop-loc-text { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+
+    .toggle-pill {
+        display: inline-flex; align-items: center; gap: 0.3rem;
+        border: none; background: none; cursor: pointer; padding: 0.2rem 0;
+        font-size: 0.78rem; font-weight: 600;
+    }
+    .row-actions { display: flex; gap: 0.5rem; }
+
+    @media (max-width: 700px) {
+        .table-scroll { overflow-x: auto; }
+        table { min-width: 720px; }
+        .search-input { width: 150px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Properties</h1>
+        <p>{{ properties.count }} propert{{ properties.count|pluralize:"y,ies" }} in total.</p>
+    </div>
+    <a href="{% url 'dashboard_property_add' %}" class="btn btn-gold">+ Add Property</a>
+</div>
+
+<div class="toolbar">
+    <div class="filter-chips">
+        <a href="{% url 'dashboard_properties' %}" class="filter-chip {% if not status_filter %}active{% endif %}">All</a>
+        <a href="?status=active" class="filter-chip {% if status_filter == 'active' %}active{% endif %}">Active</a>
+        <a href="?status=inactive" class="filter-chip {% if status_filter == 'inactive' %}active{% endif %}">Hidden</a>
+        <a href="?status=featured" class="filter-chip {% if status_filter == 'featured' %}active{% endif %}">Featured</a>
+    </div>
+    <form method="get" class="search-form">
+        {% if status_filter %}<input type="hidden" name="status" value="{{ status_filter }}">{% endif %}
+        <input type="text" name="q" value="{{ q }}" placeholder="Search title or location..." class="search-input">
+        <button type="submit" class="btn btn-outline btn-sm">Search</button>
+    </form>
+</div>
+
+<div class="card">
+    {% if properties %}
+    <div class="table-scroll">
+    <table>
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Price</th>
+                <th>Media</th>
+                <th>Featured</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for property in properties %}
+            <tr>
+                <td>
+                    <div class="prop-title-cell">
+                        {% if property.main_image %}
+                        <img src="{{ property.main_image.url }}" class="prop-thumb" alt="">
+                        {% else %}
+                        <div class="prop-thumb"></div>
+                        {% endif %}
+                        <div>
+                            <div class="prop-title-text">{{ property.title }}</div>
+                            <div class="prop-loc-text">📍 {{ property.location }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ property.get_property_type_display }}</td>
+                <td><span class="badge badge-gray">{{ property.get_status_display }}</span></td>
+                <td>{{ property.get_display_price }}</td>
+                <td>{{ property.media_count }} file{{ property.media_count|pluralize }}</td>
+                <td>
+                    <form method="post" action="{% url 'dashboard_property_toggle' property.pk 'featured' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="toggle-pill" style="color: {% if property.is_featured %}#8a6d1f{% else %}var(--muted){% endif %};">
+                            {% if property.is_featured %}⭐ Yes{% else %}☆ No{% endif %}
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="{% url 'dashboard_property_toggle' property.pk 'active' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="toggle-pill" style="color: {% if property.is_active %}#065f46{% else %}var(--red){% endif %};">
+                            {% if property.is_active %}● Live{% else %}○ Hidden{% endif %}
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <div class="row-actions">
+                        <a href="{% url 'dashboard_property_edit' property.pk %}" class="btn btn-outline btn-sm">Edit</a>
+                        <a href="{% url 'dashboard_property_delete' property.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="es-icon">🏘️</div>
+        No properties match this view.
+        <div style="margin-top:1rem;"><a href="{% url 'dashboard_property_add' %}" class="btn btn-gold">+ Add your first property</a></div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

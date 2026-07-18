@@ -1,5 +1,5 @@
 from django import forms
-from .models import Registration, VendorApplication, ContactMessage
+from .models import Registration, VendorApplication, ContactMessage, Property
 
 
 class RegistrationForm(forms.ModelForm):
@@ -55,4 +55,25 @@ class ContactForm(forms.ModelForm):
             'email': 'Email Address',
             'phone': 'Phone Number',
             'message': 'Message',
+        }
+
+
+class PropertyForm(forms.ModelForm):
+    class Meta:
+        model = Property
+        fields = [
+            'title', 'property_type', 'status', 'location', 'description',
+            'bedrooms', 'bathrooms', 'size', 'price', 'price_on_request',
+            'main_image', 'is_featured', 'is_active',
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'e.g. Penthouse Apartment', 'class': 'dash-input'}),
+            'property_type': forms.Select(attrs={'class': 'dash-input'}),
+            'status': forms.Select(attrs={'class': 'dash-input'}),
+            'location': forms.TextInput(attrs={'placeholder': 'e.g. Sangotedo, Lekki, Lagos', 'class': 'dash-input'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Describe the property...', 'class': 'dash-input', 'rows': 4}),
+            'bedrooms': forms.NumberInput(attrs={'class': 'dash-input', 'min': 0}),
+            'bathrooms': forms.NumberInput(attrs={'class': 'dash-input', 'min': 0}),
+            'size': forms.TextInput(attrs={'placeholder': 'e.g. 650 sqm, 2 plots', 'class': 'dash-input'}),
+            'price': forms.TextInput(attrs={'placeholder': 'e.g. ₦45,000,000', 'class': 'dash-input'}),
         }

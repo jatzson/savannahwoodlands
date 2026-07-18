@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Login — Savannah Woodlands</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a3a2e;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 1.5rem;
+        }
+        .login-card {
+            width: 100%; max-width: 380px;
+            background: #ffffff; border-radius: 14px;
+            padding: 2.5rem 2.25rem;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+        }
+        .login-brand { text-align: center; margin-bottom: 1.75rem; }
+        .login-brand-title { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.4rem; color: #1a3a2e; }
+        .login-brand-sub { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: #c9a84c; margin-top: 4px; font-weight: 600; }
+
+        .form-group { margin-bottom: 1.15rem; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #1a3a2e; margin-bottom: 0.4rem; }
+        .form-input {
+            width: 100%; padding: 0.8rem 1rem; border: 1.5px solid #e5e0d8; border-radius: 6px;
+            font-size: 0.95rem; font-family: inherit; outline: none; transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: #1a3a2e; }
+
+        .login-btn {
+            width: 100%; padding: 0.85rem; background: #1a3a2e; color: #ffffff;
+            border: none; border-radius: 6px; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; margin-top: 0.5rem; transition: background 0.2s;
+        }
+        .login-btn:hover { background: #0f2419; }
+
+        .messages-list { list-style: none; margin-bottom: 1.25rem; }
+        .messages-list li { padding: 0.7rem 0.9rem; border-radius: 6px; font-size: 0.82rem; }
+        .messages-list li.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+        .back-link { display: block; text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: rgba(255,255,255,0.65); text-decoration: none; }
+        .back-link:hover { color: #ffffff; }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="login-card">
+            <div class="login-brand">
+                <div class="login-brand-title">Savannah Woodlands</div>
+                <div class="login-brand-sub">Staff Dashboard</div>
+            </div>
+
+            {% if messages %}
+            <ul class="messages-list">{% for msg in messages %}<li class="{{ msg.tags }}">{{ msg }}</li>{% endfor %}</ul>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" id="id_username" class="form-input" autofocus required>
+                </div>
+                <div class="form-group">
+                    <label for="id_password">Password</label>
+                    <input type="password" name="password" id="id_password" class="form-input" required>
+                </div>
+                <button type="submit" class="login-btn">Sign In</button>
+            </form>
+        </div>
+        <a href="{% url 'home' %}" class="back-link">← Back to main site</a>
+    </div>
+</body>
+</html>
