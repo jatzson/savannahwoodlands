@@ -203,18 +203,54 @@
     .help-banner-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
     @media (max-width: 900px) {
+        .ch-hero { min-height: auto; }
+        .ch-hero-content { padding: 5.5rem 1.5rem 3.5rem; }
         .event-card { grid-template-columns: 1fr; }
         .event-card-img { min-height: 220px; }
         .wwd-grid { grid-template-columns: 1fr; }
         .listings-grid { grid-template-columns: 1fr 1fr; }
         .help-banner { flex-direction: column; text-align: center; padding: 2.25rem 1.5rem; }
         .help-banner-text .ch-label { text-align: center; }
-        .ch-section { padding: 4rem 0; }
+        .ch-section { padding: 3.5rem 0; }
+        .features-inner { grid-template-columns: 1fr 1fr; }
+        .feature-item { border-right: none; border-bottom: 1px solid var(--border); }
+        .feature-item:nth-child(2n) { border-right: none; }
     }
-    @media (max-width: 480px) {
-        .listings-grid { grid-template-columns: 1fr; }
-        .ch-hero-actions { flex-direction: column; align-items: stretch; }
-        .event-card-body { padding: 2rem 1.5rem; }
+    @media (max-width: 640px) {
+        .ch-hero-content { padding: 4.5rem 1.25rem 3rem; }
+        .ch-hero h1 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
+        .ch-hero-tagline { font-size: 0.92rem; line-height: 1.65; margin-bottom: 2rem; }
+        .ch-hero-actions { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+        .ch-hero-actions .btn { text-align: center; width: 100%; }
+
+        .container { padding: 0 1.25rem; }
+        .features-inner { grid-template-columns: 1fr 1fr; padding: 0 1.25rem; }
+        .feature-item { padding: 1.25rem 0.5rem; gap: 0.65rem; }
+        .feature-icon { width: 38px; height: 38px; font-size: 1.15rem; }
+        .feature-text .ft { font-size: 0.62rem; }
+        .feature-text .fv { font-size: 0.82rem; }
+
+        .ch-section { padding: 3rem 0; }
+        .ch-title { font-size: clamp(1.5rem, 6vw, 2rem); }
+        .ch-sub { margin-bottom: 2rem; }
+
+        .wwd-card { padding: 1.75rem 1.25rem; }
+
+        .event-card-img { min-height: 180px; }
+        .event-card-body { padding: 1.75rem 1.25rem; }
+        .event-card-body h3 { font-size: 1.3rem; }
+
+        .listings-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+        .listing-img-wrap { height: 190px; }
+
+        .help-banner { padding: 2rem 1.25rem; gap: 1.25rem; }
+        .help-banner-text h2 { font-size: 1.3rem; }
+        .help-banner-actions { flex-direction: column; align-items: stretch; width: 100%; }
+        .help-banner-actions .btn { text-align: center; }
+    }
+    @media (max-width: 380px) {
+        .features-inner { grid-template-columns: 1fr; }
+        .feature-item { border-bottom: 1px solid var(--border); }
     }
 </style>
 {% endblock %}
