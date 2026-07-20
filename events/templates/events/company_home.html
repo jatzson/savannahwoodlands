@@ -5,10 +5,13 @@
 
 {% block extra_styles %}
 <style>
+    /* ICONS */
+    .icon-svg { display: block; }
+
     /* HERO */
     .ch-hero {
         position: relative;
-        min-height: 88vh;
+        min-height: 92vh;
         display: flex;
         align-items: center;
         overflow: hidden;
@@ -20,90 +23,131 @@
         background-image: url("https://res.cloudinary.com/mpjyr8mx/image/upload/v1784330998/fly1_cq8skj.jpg");
         background-size: cover;
         background-position: center;
-        opacity: 0.4;
+        opacity: 0.62;
     }
     .ch-hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(26,58,46,0.55) 0%, rgba(10,25,19,0.92) 100%);
+        background: linear-gradient(180deg, rgba(10,25,19,0.35) 0%, rgba(10,25,19,0.65) 55%, rgba(10,25,19,0.96) 100%);
     }
     .ch-hero-content {
         position: relative;
         z-index: 2;
-        max-width: 720px;
+        max-width: 760px;
         margin: 0 auto;
-        padding: 6rem 2rem;
+        padding: 6rem 2rem 8.5rem;
         text-align: center;
     }
     .ch-hero-eyebrow {
+        display: inline-flex; align-items: center; gap: 0.6rem;
         font-size: 0.72rem;
         font-weight: 600;
         letter-spacing: 0.25em;
         text-transform: uppercase;
         color: var(--gold);
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.75rem;
     }
+    .ch-hero-eyebrow::before, .ch-hero-eyebrow::after { content: ''; width: 24px; height: 1px; background: var(--gold); opacity: 0.6; }
     .ch-hero h1 {
         font-family: 'Playfair Display', serif;
-        font-size: clamp(2.4rem, 6vw, 4rem);
+        font-size: clamp(2.4rem, 6vw, 4.1rem);
         font-weight: 900;
-        line-height: 1.1;
+        line-height: 1.12;
         color: var(--white);
-        margin-bottom: 1.25rem;
+        margin-bottom: 1.4rem;
+        text-shadow: 0 2px 24px rgba(0,0,0,0.25);
     }
     .ch-hero h1 .accent { color: var(--gold); }
     .ch-hero-tagline {
-        color: rgba(255,255,255,0.75);
-        font-size: 1.05rem;
-        line-height: 1.7;
-        max-width: 560px;
-        margin: 0 auto 2.5rem;
+        color: rgba(255,255,255,0.82);
+        font-size: 1.08rem;
+        line-height: 1.75;
+        max-width: 580px;
+        margin: 0 auto 2.25rem;
     }
-    .ch-hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .ch-hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.75rem; }
+    .ch-hero-trust {
+        font-size: 0.78rem; color: rgba(255,255,255,0.55);
+        display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: wrap;
+        letter-spacing: 0.02em;
+    }
+    .ch-hero-trust .dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.35); }
 
-      /* FEATURES */
-    .features-strip { background: var(--white); border-bottom: 1px solid var(--border); }
-    .features-inner {
-        max-width: 1100px; margin: 0 auto; padding: 0 2rem;
-        display: grid; grid-template-columns: repeat(4,1fr);
+    /* STATS BAR — floats over hero/section boundary */
+    .stats-bar-wrap { position: relative; z-index: 3; margin-top: -4.5rem; padding: 0 2rem; }
+    .stats-bar {
+        max-width: 1100px; margin: 0 auto;
+        background: var(--white); border-radius: 14px;
+        box-shadow: 0 24px 60px rgba(10,25,19,0.18);
+        display: grid; grid-template-columns: repeat(4, 1fr);
     }
-    .feature-item {
-        padding: 2rem 1.5rem; border-right: 1px solid var(--border);
-        display: flex; align-items: center; gap: 1rem;
+    .stat-cell {
+        padding: 2rem 1.5rem; text-align: center;
+        border-right: 1px solid var(--border);
+        display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
     }
-    .feature-item:last-child { border-right: none; }
-    .feature-icon {
-        font-size: 1.4rem; width: 46px; height: 46px;
-        background: #f0f7f4; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .feature-text .ft { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
-    .feature-text .fv { font-weight: 600; color: var(--forest); font-size: 0.9rem; }
+    .stat-cell:last-child { border-right: none; }
+    .stat-icon { color: var(--gold); }
+    .stat-number { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 800; color: var(--forest); line-height: 1; }
+    .stat-label { font-size: 0.74rem; color: var(--muted); font-weight: 500; letter-spacing: 0.01em; }
 
     /* SECTIONS */
-    .ch-section { padding: 5.5rem 0; }
-    .ch-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; text-align: center; }
+    .ch-section { padding: 6rem 0 5.5rem; }
+    .ch-label {
+        display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+        font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold);
+        margin-bottom: 1rem; text-align: center;
+    }
+    .ch-label::before, .ch-label::after { content: ''; width: 20px; height: 1px; background: var(--gold); opacity: 0.5; }
     .ch-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; color: var(--forest); margin-bottom: 1rem; text-align: center; }
-    .ch-sub { color: var(--muted); max-width: 560px; margin: 0 auto 3rem; text-align: center; font-size: 0.98rem; }
+    .ch-sub { color: var(--muted); max-width: 560px; margin: 0 auto 3.5rem; text-align: center; font-size: 0.98rem; line-height: 1.7; }
 
     /* WHAT WE DO */
     .wwd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
     .wwd-card {
         background: var(--white);
         border: 1px solid var(--border);
+        border-top: 3px solid transparent;
         border-radius: 12px;
-        padding: 2.25rem 1.75rem;
+        padding: 2.5rem 1.85rem;
         text-align: center;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: transform 0.25s cubic-bezier(.16,.84,.44,1), box-shadow 0.25s ease, border-top-color 0.25s ease;
     }
-    .wwd-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(26,58,46,0.1); }
+    .wwd-card:hover { transform: translateY(-5px); box-shadow: 0 20px 44px rgba(26,58,46,0.12); border-top-color: var(--gold); }
     .wwd-icon {
-        width: 56px; height: 56px; border-radius: 50%;
+        width: 60px; height: 60px; border-radius: 50%;
         background: #f0f7f4; display: flex; align-items: center; justify-content: center;
-        font-size: 1.5rem; margin: 0 auto 1.25rem;
+        margin: 0 auto 1.4rem; color: var(--forest);
     }
-    .wwd-card h3 { font-family: 'Playfair Display', serif; color: var(--forest); font-size: 1.15rem; margin-bottom: 0.6rem; }
-    .wwd-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+    .wwd-card h3 { font-family: 'Playfair Display', serif; color: var(--forest); font-size: 1.18rem; margin-bottom: 0.7rem; }
+    .wwd-card p { color: var(--muted); font-size: 0.89rem; line-height: 1.65; }
+
+    /* WHY CHOOSE US — asymmetric split */
+    .why-section { background: var(--cream); }
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; }
+    .why-text .ch-label, .why-text .ch-title { text-align: left; justify-content: flex-start; margin-bottom: 1.25rem; }
+    .why-text .ch-label::after { display: none; }
+    .why-text > p.lead { color: var(--muted); font-size: 0.98rem; line-height: 1.75; margin-bottom: 2rem; }
+    .why-checklist { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .why-checklist li { display: flex; align-items: flex-start; gap: 0.9rem; }
+    .why-check-icon {
+        width: 30px; height: 30px; border-radius: 50%; background: var(--forest);
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .why-checklist strong { display: block; color: var(--forest); font-size: 0.95rem; margin-bottom: 0.15rem; }
+    .why-checklist span { color: var(--muted); font-size: 0.86rem; line-height: 1.55; }
+
+    .why-media { position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 24px 50px rgba(26,58,46,0.16); }
+    .why-media img { width: 100%; height: 460px; object-fit: cover; display: block; }
+    .why-media-badge {
+        position: absolute; bottom: 1.5rem; left: 1.5rem; right: 1.5rem;
+        background: rgba(10,25,19,0.88); backdrop-filter: blur(4px);
+        border-radius: 10px; padding: 1.1rem 1.35rem;
+        display: flex; align-items: center; gap: 0.9rem;
+    }
+    .why-media-badge .icon-wrap { color: var(--gold); flex-shrink: 0; }
+    .why-media-badge strong { color: var(--white); font-size: 0.92rem; display: block; }
+    .why-media-badge span { color: rgba(255,255,255,0.65); font-size: 0.76rem; }
 
     /* UPCOMING EVENTS */
     .ch-events-section { background: var(--forest); }
@@ -127,6 +171,8 @@
         background-image: url("https://res.cloudinary.com/mpjyr8mx/image/upload/v1784331001/flyer1_adidlm.jpg");
         background-size: cover;
         background-position: center top;
+        display: flex; flex-direction: column; justify-content: space-between;
+        padding: 1.25rem;
     }
     .event-card-img::before {
         content: '';
@@ -134,10 +180,17 @@
         background: linear-gradient(180deg, rgba(3,114,22,0.2) 0%, rgba(6,109,23,0.75) 100%);
     }
     .event-card-badge {
-        position: absolute; top: 1.25rem; left: 1.25rem; z-index: 2;
+        position: relative; z-index: 2; align-self: flex-start;
         background: var(--gold); color: var(--forest);
         font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
         padding: 0.4rem 0.9rem; border-radius: 4px;
+    }
+    .event-card-countdown {
+        position: relative; z-index: 2; align-self: flex-start;
+        background: rgba(10,25,19,0.75); color: var(--white);
+        font-size: 0.72rem; font-weight: 600;
+        padding: 0.4rem 0.85rem; border-radius: 4px;
+        display: flex; align-items: center; gap: 0.4rem;
     }
     .event-card-body { padding: 2.5rem 2.25rem; display: flex; flex-direction: column; justify-content: center; }
     .event-card-body h3 {
@@ -145,9 +198,9 @@
         color: var(--forest); margin-bottom: 0.75rem; line-height: 1.2;
     }
     .event-card-body p.desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
-    .event-meta-list { list-style: none; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.65rem; }
-    .event-meta-list li { display: flex; align-items: center; gap: 0.65rem; font-size: 0.87rem; color: var(--charcoal); }
-    .event-meta-list .em-icon { font-size: 1rem; }
+    .event-meta-list { list-style: none; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .event-meta-list li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.87rem; color: var(--charcoal); }
+    .event-meta-list .em-icon { color: var(--gold); flex-shrink: 0; display: flex; }
 
     /* PROPERTY LISTINGS */
     .listings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
@@ -155,11 +208,12 @@
         border-radius: 12px; overflow: hidden; background: var(--white);
         border: 1px solid var(--border);
         box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: transform 0.25s cubic-bezier(.16,.84,.44,1), box-shadow 0.25s ease;
     }
     .listing-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.12); }
     .listing-img-wrap { position: relative; height: 210px; overflow: hidden; }
-    .listing-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .listing-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+    .listing-card:hover .listing-img-wrap img { transform: scale(1.05); }
     .listing-badge {
         position: absolute; top: 0.85rem; left: 0.85rem;
         background: var(--forest); color: var(--white);
@@ -169,7 +223,8 @@
     .listing-body { padding: 1.25rem 1.35rem 1.5rem; }
     .listing-type { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 0.35rem; }
     .listing-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--forest); margin-bottom: 0.4rem; line-height: 1.3; }
-    .listing-location { font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 0.35rem; margin-bottom: 1rem; }
+    .listing-location { font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem; }
+    .listing-location .icon-svg { flex-shrink: 0; }
     .listing-footer {
         display: flex; align-items: center; justify-content: space-between;
         padding-top: 1rem; border-top: 1px solid var(--border);
@@ -186,8 +241,7 @@
 
     /* NEED HELP BANNER */
     .help-banner {
-        background: var(--cream);
-        border: 1px solid var(--border);
+        background: var(--forest);
         border-radius: 16px;
         max-width: 1100px;
         margin: 0 auto;
@@ -197,39 +251,52 @@
         justify-content: space-between;
         gap: 2rem;
         flex-wrap: wrap;
+        position: relative;
+        overflow: hidden;
     }
-    .help-banner-text .ch-label { text-align: left; margin-bottom: 0.5rem; }
-    .help-banner-text h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--forest); font-weight: 700; }
-    .help-banner-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .help-banner::before {
+        content: ''; position: absolute; top: -60px; right: -60px;
+        width: 220px; height: 220px; border-radius: 50%; background: rgba(201,168,76,0.08);
+    }
+    .help-banner-text { position: relative; z-index: 2; }
+    .help-banner-text .ch-label { text-align: left; justify-content: flex-start; margin-bottom: 0.5rem; }
+    .help-banner-text .ch-label::after { display: none; }
+    .help-banner-text h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--white); font-weight: 700; }
+    .help-banner-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; position: relative; z-index: 2; }
+    .help-banner-actions .btn { display: inline-flex; align-items: center; gap: 0.5rem; }
 
+    @media (max-width: 1000px) {
+        .why-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+        .why-media img { height: 340px; }
+    }
     @media (max-width: 900px) {
         .ch-hero { min-height: auto; }
-        .ch-hero-content { padding: 5.5rem 1.5rem 3.5rem; }
+        .ch-hero-content { padding: 5.5rem 1.5rem 6.5rem; }
+        .stats-bar { grid-template-columns: 1fr 1fr; }
+        .stat-cell { border-bottom: 1px solid var(--border); }
+        .stat-cell:nth-child(2n) { border-right: none; }
         .event-card { grid-template-columns: 1fr; }
         .event-card-img { min-height: 220px; }
         .wwd-grid { grid-template-columns: 1fr; }
         .listings-grid { grid-template-columns: 1fr 1fr; }
         .help-banner { flex-direction: column; text-align: center; padding: 2.25rem 1.5rem; }
-        .help-banner-text .ch-label { text-align: center; }
+        .help-banner-text .ch-label, .help-banner-text { text-align: center; justify-content: center; }
         .ch-section { padding: 3.5rem 0; }
-        .features-inner { grid-template-columns: 1fr 1fr; }
-        .feature-item { border-right: none; border-bottom: 1px solid var(--border); }
-        .feature-item:nth-child(2n) { border-right: none; }
     }
     @media (max-width: 640px) {
-        .ch-hero-content { padding: 4.5rem 1.25rem 3rem; }
+        .ch-hero-content { padding: 4.5rem 1.25rem 6rem; }
         .ch-hero h1 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
         .ch-hero-tagline { font-size: 0.92rem; line-height: 1.65; margin-bottom: 2rem; }
         .ch-hero-actions { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-        .ch-hero-actions .btn { text-align: center; width: 100%; }
+        .ch-hero-actions .btn { text-align: center; width: 100%; justify-content: center; }
+
+        .stats-bar-wrap { margin-top: -3rem; padding: 0 1.25rem; }
+        .stats-bar { grid-template-columns: 1fr 1fr; }
+        .stat-cell { padding: 1.35rem 1rem; }
+        .stat-number { font-size: 1.4rem; }
+        .stat-label { font-size: 0.66rem; }
 
         .container { padding: 0 1.25rem; }
-        .features-inner { grid-template-columns: 1fr 1fr; padding: 0 1.25rem; }
-        .feature-item { padding: 1.25rem 0.5rem; gap: 0.65rem; }
-        .feature-icon { width: 38px; height: 38px; font-size: 1.15rem; }
-        .feature-text .ft { font-size: 0.62rem; }
-        .feature-text .fv { font-size: 0.82rem; }
-
         .ch-section { padding: 3rem 0; }
         .ch-title { font-size: clamp(1.5rem, 6vw, 2rem); }
         .ch-sub { margin-bottom: 2rem; }
@@ -246,11 +313,130 @@
         .help-banner { padding: 2rem 1.25rem; gap: 1.25rem; }
         .help-banner-text h2 { font-size: 1.3rem; }
         .help-banner-actions { flex-direction: column; align-items: stretch; width: 100%; }
-        .help-banner-actions .btn { text-align: center; }
+        .help-banner-actions .btn { text-align: center; justify-content: center; }
     }
-    @media (max-width: 380px) {
-        .features-inner { grid-template-columns: 1fr; }
-        .feature-item { border-bottom: 1px solid var(--border); }
+
+    /* =====================================================
+       MOTION SYSTEM
+       ===================================================== */
+
+    /* Hero — slow ambient zoom on the backdrop photo */
+    @keyframes chKenBurns {
+        0%   { transform: scale(1); }
+        100% { transform: scale(1.09); }
+    }
+    .ch-hero-bg { animation: chKenBurns 22s ease-out forwards; }
+
+    /* Hero content — staged entrance on page load */
+    @keyframes chFadeUp {
+        from { opacity: 0; transform: translateY(22px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .ch-hero-eyebrow { opacity: 0; animation: chFadeUp 0.8s cubic-bezier(.16,.84,.44,1) 0.15s forwards; }
+    .ch-hero h1 { opacity: 0; animation: chFadeUp 0.9s cubic-bezier(.16,.84,.44,1) 0.32s forwards; }
+    .ch-hero-tagline { opacity: 0; animation: chFadeUp 0.9s cubic-bezier(.16,.84,.44,1) 0.48s forwards; }
+    .ch-hero-actions { opacity: 0; animation: chFadeUp 0.9s cubic-bezier(.16,.84,.44,1) 0.62s forwards; }
+    .ch-hero-trust { opacity: 0; animation: chFadeUp 0.9s cubic-bezier(.16,.84,.44,1) 0.76s forwards; }
+    .stats-bar-wrap { opacity: 0; animation: chFadeUp 0.9s cubic-bezier(.16,.84,.44,1) 0.92s forwards; }
+
+    /* Eyebrow rule draws itself in rather than just appearing */
+    @keyframes chDrawLine { from { width: 0; opacity: 0; } to { opacity: 0.6; } }
+    .ch-hero-eyebrow::before, .ch-hero-eyebrow::after { animation: chDrawLine 0.7s ease-out 0.5s backwards; }
+
+    /* Hero buttons — soft breathing glow on the gold CTA, sheen sweep on hover */
+    @keyframes chGlowPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.0); }
+        50% { box-shadow: 0 0 0 10px rgba(201,168,76,0.0), 0 6px 26px rgba(201,168,76,0.35); }
+    }
+    .btn { position: relative; overflow: hidden; transition: transform 0.25s cubic-bezier(.16,.84,.44,1), box-shadow 0.25s ease, background 0.2s ease; }
+    .btn::after {
+        content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+        background: linear-gradient(115deg, transparent, rgba(255,255,255,0.35), transparent);
+        transform: skewX(-20deg);
+        transition: left 0.65s cubic-bezier(.16,.84,.44,1);
+        pointer-events: none;
+    }
+    .btn:hover::after { left: 130%; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn.btn-gold { animation: chGlowPulse 3.4s ease-in-out 1.5s infinite; }
+    .btn.btn-gold:hover { animation: none; }
+
+    /* Scroll-down cue at the base of the hero */
+    .ch-scroll-cue {
+        position: absolute; left: 50%; bottom: 1.6rem; transform: translateX(-50%);
+        z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+        color: rgba(255,255,255,0.55); text-decoration: none;
+        opacity: 0; animation: chFadeUp 0.9s cubic-bezier(.16,.84,.44,1) 1.1s forwards;
+    }
+    .ch-scroll-cue span { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; }
+    .ch-scroll-cue .chevron { animation: chBounce 2s ease-in-out infinite; }
+    @keyframes chBounce {
+        0%, 100% { transform: translateY(0); opacity: 0.5; }
+        50% { transform: translateY(6px); opacity: 1; }
+    }
+
+    /* Generic scroll-reveal: elements start hidden/offset, JS flips .is-visible on when in view */
+    [data-reveal] {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.7s cubic-bezier(.16,.84,.44,1), transform 0.7s cubic-bezier(.16,.84,.44,1);
+    }
+    [data-reveal].is-visible { opacity: 1; transform: translateY(0); }
+    [data-reveal="zoom"] { transform: scale(0.94) translateY(0); }
+    [data-reveal="zoom"].is-visible { transform: scale(1) translateY(0); }
+    [data-reveal="left"] { transform: translateX(-32px); }
+    [data-reveal="left"].is-visible { transform: translateX(0); }
+    [data-reveal="right"] { transform: translateX(32px); }
+    [data-reveal="right"].is-visible { transform: translateX(0); }
+
+    /* Staggered children within a reveal group */
+    [data-reveal-group] > * {
+        opacity: 0; transform: translateY(24px);
+        transition: opacity 0.6s cubic-bezier(.16,.84,.44,1), transform 0.6s cubic-bezier(.16,.84,.44,1);
+    }
+    [data-reveal-group].is-visible > * { opacity: 1; transform: translateY(0); }
+    [data-reveal-group].is-visible > *:nth-child(1) { transition-delay: 0.05s; }
+    [data-reveal-group].is-visible > *:nth-child(2) { transition-delay: 0.16s; }
+    [data-reveal-group].is-visible > *:nth-child(3) { transition-delay: 0.27s; }
+    [data-reveal-group].is-visible > *:nth-child(4) { transition-delay: 0.38s; }
+    [data-reveal-group].is-visible > *:nth-child(5) { transition-delay: 0.49s; }
+
+    /* Icon circles get a little pop once their card is visible */
+    .wwd-card .wwd-icon { transition: transform 0.4s cubic-bezier(.34,1.56,.64,1), background 0.3s ease; }
+    .wwd-card:hover .wwd-icon { transform: scale(1.12) rotate(-6deg); background: var(--gold); color: var(--forest); }
+
+    /* Why-choose checklist ticks pop in with a spring */
+    .why-check-icon { transition: transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+    .why-checklist li:hover .why-check-icon { transform: scale(1.15); background: var(--gold); }
+
+    /* Event card countdown — soft attention pulse */
+    @keyframes chCountdownPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.35); }
+        50% { box-shadow: 0 0 0 6px rgba(201,168,76,0); }
+    }
+    .event-card-countdown { animation: chCountdownPulse 2.4s ease-in-out infinite; }
+
+    /* Help banner decorative circle drifts gently */
+    @keyframes chFloat {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(-8px, 10px); }
+    }
+    .help-banner::before { animation: chFloat 7s ease-in-out infinite; }
+
+    /* Respect reduced-motion preference across the whole motion system */
+    @media (prefers-reduced-motion: reduce) {
+        .ch-hero-bg,
+        .ch-hero-eyebrow, .ch-hero h1, .ch-hero-tagline, .ch-hero-actions, .ch-hero-trust, .stats-bar-wrap,
+        .ch-hero-eyebrow::before, .ch-hero-eyebrow::after,
+        .btn.btn-gold, .ch-scroll-cue, .ch-scroll-cue .chevron,
+        .event-card-countdown, .help-banner::before {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+        [data-reveal], [data-reveal-group] > * {
+            opacity: 1 !important; transform: none !important; transition: none !important;
+        }
     }
 </style>
 {% endblock %}
@@ -265,34 +451,50 @@
         <div class="ch-hero-eyebrow">Savannah Woodlands</div>
         <h1>Prime Land & Property, <span class="accent">Trusted Across Nigeria</span></h1>
         <p class="ch-hero-tagline">
-            A leading real estate company specializing in the marketing and sale of lands and properties across Nigeria. 
-            We connect buyers, sellers, and investors with verified real estate opportunities through expert advisory, strategic marketing, and exclusive property exhibitions
+            A leading real estate company specializing in the marketing and sale of lands and properties across Nigeria.
+            We connect buyers, sellers, and investors with handpicked real estate opportunities through expert advisory, strategic marketing, and exclusive property exhibitions.
         </p>
         <div class="ch-hero-actions">
             <a href="{% url 'event_home' %}" class="btn btn-gold">View Upcoming Events</a>
             <a href="{% url 'contact_us' %}" class="btn btn-outline">Contact Us</a>
         </div>
+        <div class="ch-hero-trust">
+            <span>Registered Real Estate Company</span>
+            <span class="dot"></span>
+            <span>Diligent Documentation Review</span>
+            <span class="dot"></span>
+            <span>Nationwide Coverage</span>
+        </div>
     </div>
+    <a href="#events" class="ch-scroll-cue" aria-label="Scroll to explore">
+        <span>Explore</span>
+        <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
 </section>
 
-<!-- FEATURES STRIP -->
-<div class="features-strip">
-    <div class="features-inner">
-        <div class="feature-item">
-            <div class="feature-icon">🏙️</div>
-            <div class="feature-text"><div class="ft">Elevating</div><div class="fv">Real Estate</div></div>
+<!-- STATS BAR -->
+<!-- NOTE for client: the figures below are placeholders. Please replace with your company's actual numbers before this goes live. -->
+<div class="stats-bar-wrap">
+    <div class="stats-bar">
+        <div class="stat-cell">
+            <div class="stat-icon"><svg class="icon-svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="6" height="12"/><rect x="9" y="4" width="6" height="17"/><rect x="15" y="12" width="6" height="9"/></svg></div>
+            <div class="stat-number" data-count="10" data-suffix="+">0+</div>
+            <div class="stat-label">Years of Experience</div>
         </div>
-        <div class="feature-item">
-            <div class="feature-icon">✅</div>
-            <div class="feature-text"><div class="ft">Connecting</div><div class="fv">Opportunities</div></div>
+        <div class="stat-cell">
+            <div class="stat-icon"><svg class="icon-svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></div>
+            <div class="stat-number" data-count="500" data-suffix="+">0+</div>
+            <div class="stat-label">Properties Marketed</div>
         </div>
-        <div class="feature-item">
-            <div class="feature-icon">🤝</div>
-            <div class="feature-text"><div class="ft">Creating</div><div class="fv">Value</div></div>
+        <div class="stat-cell">
+            <div class="stat-icon"><svg class="icon-svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.5" cy="9" r="2.4"/><path d="M15.5 14.3c2.6.2 4.5 2.6 4.5 5.7"/></svg></div>
+            <div class="stat-number" data-count="1000" data-suffix="+" data-format="comma">0+</div>
+            <div class="stat-label">Clients Served</div>
         </div>
-        <div class="feature-item">
-            <div class="feature-icon">🔒</div>
-            <div class="feature-text"><div class="ft">Building</div><div class="fv">Trust</div></div>
+        <div class="stat-cell">
+            <div class="stat-icon"><svg class="icon-svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <div class="stat-number" data-count="100" data-suffix="%">0%</div>
+            <div class="stat-label">Curated Listings</div>
         </div>
     </div>
 </div>
@@ -300,25 +502,76 @@
 <!-- WHAT WE DO -->
 <section class="ch-section">
     <div class="container">
+        <div data-reveal-group>
         <div class="ch-label">What We Do</div>
         <div class="ch-title">Your Partner In Land & Property</div>
         <p class="ch-sub">From property listings to in-person buying events, Savannah Woodlands helps you navigate the Nigerian property market with confidence.</p>
+        </div>
 
-        <div class="wwd-grid">
+        <div class="wwd-grid" data-reveal-group>
             <div class="wwd-card">
-                <div class="wwd-icon">🏞️</div>
+                <div class="wwd-icon">
+                    <svg class="icon-svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/><path d="M9 12h.01M15 12h.01M12 9h.01"/></svg>
+                </div>
                 <h3>Land Sales</h3>
-                <p>Verified residential, commercial, and agricultural land across prime Nigerian locations.</p>
+                <p>Premium residential, commercial, and agricultural land across prime Nigerian locations.</p>
             </div>
             <div class="wwd-card">
-                <div class="wwd-icon">🧭</div>
+                <div class="wwd-icon">
+                    <svg class="icon-svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 5-5 2 2-5z"/></svg>
+                </div>
                 <h3>Property Consultation</h3>
                 <p>Expert guidance on documentation, valuation, and safe land acquisition from start to finish.</p>
             </div>
             <div class="wwd-card">
-                <div class="wwd-icon">🤝</div>
+                <div class="wwd-icon">
+                    <svg class="icon-svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M2.5 20c0-3 2.5-5.4 5.5-5.4s5.5 2.4 5.5 5.4"/><path d="M14.5 14.8c2.4.3 4.2 2.5 4.2 5.2"/></svg>
+                </div>
                 <h3>Buyer & Investor Events</h3>
                 <p>In-person events connecting serious buyers directly with vetted sellers and developers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="ch-section why-section">
+    <div class="container">
+        <div class="why-grid">
+            <div class="why-text" data-reveal="left">
+                <div class="ch-label">Why Choose Us</div>
+                <div class="ch-title">Built On Trust, Backed By Process</div>
+                <p class="lead">We don't just list properties — every listing goes through a thorough documentation review before it reaches you, and our team stays with you from first enquiry to final handover.</p>
+
+                <ul class="why-checklist" data-reveal-group>
+                    <li>
+                        <div class="why-check-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div><strong>Careful Documentation Review</strong><span>Every property is checked for valid title, C of O, or deed before it's listed.</span></div>
+                    </li>
+                    <li>
+                        <div class="why-check-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div><strong>Direct Access, No Middlemen Games</strong><span>Speak directly with sellers, developers, and our advisory team.</span></div>
+                    </li>
+                    <li>
+                        <div class="why-check-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div><strong>In-Person Buying Events</strong><span>Meet investors, land owners, and developers face-to-face at our exhibitions.</span></div>
+                    </li>
+                    <li>
+                        <div class="why-check-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div><strong>Support Through Closing</strong><span>From first enquiry to final handover, our team stays with you.</span></div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="why-media" data-reveal="right">
+                <img src="https://res.cloudinary.com/mpjyr8mx/image/upload/v1784330996/flyer2_k0iy3m.jpg" alt="Savannah Woodlands property">
+                <div class="why-media-badge">
+                    <div class="icon-wrap"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+                    <div>
+                        <strong>Secure, Well-Documented Deals</strong>
+                        <span>Every deal backed by proper documentation review</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -327,13 +580,16 @@
 <!-- UPCOMING EVENTS -->
 <section class="ch-section ch-events-section" id="events">
     <div class="container">
+        <div data-reveal-group>
         <div class="ch-label">Don't Miss Out</div>
         <div class="ch-title">Upcoming Events</div>
         <p class="ch-sub">Join us in person — meet land owners, investors, and developers face to face.</p>
+        </div>
 
-        <div class="event-card">
+        <div class="event-card" data-reveal="zoom">
             <div class="event-card-img">
                 <span class="event-card-badge">Upcoming</span>
+                <span class="event-card-countdown" id="eventCountdown"></span>
             </div>
             <div class="event-card-body">
                 <h3>Abuja Buy & Sell Land Event</h3>
@@ -344,9 +600,9 @@
 Designed as an exclusive access experience, the event showcases residential, commercial, agricultural, and development-ready lands and properties, making it the ideal platform to discover opportunities and make informed investment decisions.
                 </p>
                 <ul class="event-meta-list">
-                    <li><span class="em-icon">📅</span> 26th September 2026, Saturday</li>
-                    <li><span class="em-icon">🕐</span> 12:00 PM (Noon)</li>
-                    <li><span class="em-icon">📍</span> Chelsea Hotels, Muhammadu Buhari Way, Central Business District, Abuja</li>
+                    <li><span class="em-icon"><svg class="icon-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span> 26th September 2026, Saturday</li>
+                    <li><span class="em-icon"><svg class="icon-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span> 12:00 PM (Noon)</li>
+                    <li><span class="em-icon"><svg class="icon-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5C5 5.9 8.1 3 12 3s7 2.9 7 6.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg></span> Chelsea Hotels, Muhammadu Buhari Way, Central Business District, Abuja</li>
                 </ul>
                 <a href="{% url 'event_home' %}" class="btn btn-gold" style="text-align:center;">Register Now</a>
             </div>
@@ -357,12 +613,14 @@ Designed as an exclusive access experience, the event showcases residential, com
 <!-- PROPERTY LISTINGS -->
 <section class="ch-section" id="listings">
     <div class="container">
+        <div data-reveal-group>
         <div class="ch-label">Explore Portfolio</div>
         <div class="ch-title">Land & Property Listings</div>
         <p class="ch-sub">A selection of land and property currently available through Savannah Woodlands.</p>
+        </div>
 
         {% if featured_properties %}
-        <div class="listings-grid">
+        <div class="listings-grid" data-reveal-group>
             {% for property in featured_properties %}
             <div class="listing-card">
                 <a href="{% url 'property_detail' property.pk %}" style="text-decoration:none;color:inherit;display:block;">
@@ -377,7 +635,10 @@ Designed as an exclusive access experience, the event showcases residential, com
                     <div class="listing-body">
                         <div class="listing-type">{{ property.get_property_type_display }}</div>
                         <div class="listing-name">{{ property.title }}</div>
-                        <div class="listing-location">📍 {{ property.location }}</div>
+                        <div class="listing-location">
+                            <svg class="icon-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5C5 5.9 8.1 3 12 3s7 2.9 7 6.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>
+                            {{ property.location }}
+                        </div>
                         <div class="listing-footer">
                             <span class="listing-price">{{ property.get_display_price }}</span>
                             <span class="listing-enquire">View Details →</span>
@@ -399,16 +660,114 @@ Designed as an exclusive access experience, the event showcases residential, com
 
 <!-- NEED HELP BANNER -->
 <section class="ch-section" id="contact" style="padding-top: 0;">
-    <div class="help-banner">
+    <div class="help-banner" data-reveal="zoom">
         <div class="help-banner-text">
             <div class="ch-label">Need A Hand?</div>
             <h2>Can't find what you're looking for?</h2>
         </div>
         <div class="help-banner-actions">
-            <a href="mailto:info@savannahwoodlands.com" class="btn btn-gold">Email Us</a>
-            <a href="tel:+2349015948870" class="btn btn-outline">Call Us</a>
+            <a href="mailto:info@savannahwoodlands.com" class="btn btn-gold">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                Email Us
+            </a>
+            <a href="tel:+2349015948870" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v2a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014 2h2a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.5 2.1L7 9.6a16 16 0 006 6l1.1-1.1a2 2 0 012.1-.5c.9.3 1.8.5 2.7.6a2 2 0 011.7 2z"/></svg>
+                Call Us
+            </a>
         </div>
     </div>
 </section>
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Scroll-triggered reveal: anything with [data-reveal] or [data-reveal-group]
+    // fades/slides in the first time it enters the viewport, then stays put.
+    (function () {
+        var targets = document.querySelectorAll('[data-reveal], [data-reveal-group]');
+        if (!targets.length) return;
+
+        if (!('IntersectionObserver' in window)) {
+            targets.forEach(function (t) { t.classList.add('is-visible'); });
+            return;
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+        targets.forEach(function (t) { observer.observe(t); });
+    })();
+
+    // Animated stat counters — count up from 0 once the stats bar scrolls into view.
+    (function () {
+        var counters = document.querySelectorAll('.stat-number[data-count]');
+        if (!counters.length) return;
+
+        function formatNumber(value, useComma) {
+            return useComma ? Math.round(value).toLocaleString('en-US') : Math.round(value).toString();
+        }
+
+        function animateCounter(el) {
+            var target = parseFloat(el.getAttribute('data-count'), 10);
+            var suffix = el.getAttribute('data-suffix') || '';
+            var useComma = el.getAttribute('data-format') === 'comma';
+            var duration = 1400;
+            var startTime = null;
+
+            function step(timestamp) {
+                if (startTime === null) startTime = timestamp;
+                var progress = Math.min((timestamp - startTime) / duration, 1);
+                var eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
+                el.textContent = formatNumber(target * eased, useComma) + suffix;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    el.textContent = formatNumber(target, useComma) + suffix;
+                }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        if (!('IntersectionObserver' in window)) {
+            counters.forEach(animateCounter);
+            return;
+        }
+
+        var statObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    statObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.4 });
+
+        counters.forEach(function (c) { statObserver.observe(c); });
+    })();
+
+    (function () {
+        var el = document.getElementById('eventCountdown');
+        if (!el) return;
+        var eventDate = new Date('2026-09-26T12:00:00+01:00');
+        var now = new Date();
+        var diffMs = eventDate - now;
+        var days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        if (days > 1) {
+            el.textContent = days + ' days to go';
+        } else if (days === 1) {
+            el.textContent = 'Tomorrow';
+        } else if (days === 0) {
+            el.textContent = 'Today';
+        } else {
+            el.style.display = 'none';
+        }
+    })();
+</script>
 {% endblock %}
