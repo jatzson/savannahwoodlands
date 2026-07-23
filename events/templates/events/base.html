@@ -35,18 +35,20 @@
         /* NAV */
         nav {
             background: var(--forest);
-            padding: 0 2rem;
+            padding: 0.65rem 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 70px;
+            gap: 1.5rem;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 0 0 rgba(0,0,0,0);
-            transition: box-shadow 0.35s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: box-shadow 0.35s ease, padding 0.3s ease;
         }
         nav.scrolled {
+            padding: 0.45rem 2rem;
             box-shadow: 0 6px 24px rgba(0,0,0,0.18);
         }
         .nav-logo {
@@ -59,9 +61,13 @@
         .nav-logo-img {
             height: 65px;
             width: auto;
+            max-width: 220px;
+            object-fit: contain;
+            display: block;
             filter: brightness(0) invert(1);
-            transition: transform 0.35s cubic-bezier(.16,.84,.44,1);
+            transition: transform 0.35s cubic-bezier(.16,.84,.44,1), height 0.3s ease;
         }
+        nav.scrolled .nav-logo-img { height: 46px; }
         .nav-logo:hover .nav-logo-img { transform: scale(1.06) rotate(-1deg); }
         .nav-brand {
             font-family: 'Playfair Display', serif;
@@ -107,13 +113,13 @@
         .nav-cta {
             background: var(--gold) !important;
             color: var(--forest) !important;
-            padding: 0.5rem 1.25rem;
+            padding: 0.55rem 1.35rem;
             border-radius: 4px;
             font-weight: 600 !important;
             white-space: nowrap;
-            transition: transform 0.25s cubic-bezier(.16,.84,.44,1), background 0.2s;
+            transition: transform 0.25s cubic-bezier(.16,.84,.44,1), background 0.2s, box-shadow 0.25s ease;
         }
-        .nav-cta:hover { transform: translateY(-2px); }
+        .nav-cta:hover { transform: translateY(-2px); background: var(--gold-light) !important; box-shadow: 0 8px 18px rgba(201,168,76,0.3); }
 
         /* NAV — MOBILE HAMBURGER */
         .nav-toggle {
@@ -143,12 +149,15 @@
         .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
         @media (max-width: 768px) {
-            nav { padding: 0 1.25rem; }
+            nav { padding: 0.5rem 1.25rem; }
+            nav.scrolled { padding: 0.4rem 1.25rem; }
+            .nav-logo-img { height: 42px; }
+            nav.scrolled .nav-logo-img { height: 38px; }
             .nav-brand { font-size: 0.95rem; }
             .nav-toggle { display: flex; }
             .nav-links {
                 position: absolute;
-                top: 70px;
+                top: 100%;
                 left: 0;
                 right: 0;
                 background: var(--forest);
@@ -176,8 +185,8 @@
 
         /* FOOTER */
         footer {
-            background: var(--forest);
-            color: rgba(255,255,255,0.65);
+            background: linear-gradient(160deg, #2e614e 0%, #24503f 45%, #1f4636 100%);
+            color: rgba(255,255,255,0.68);
             margin-top: 5rem;
             position: relative;
             overflow: hidden;
@@ -186,7 +195,7 @@
             content: '';
             position: absolute; top: -120px; right: -120px;
             width: 320px; height: 320px; border-radius: 50%;
-            background: rgba(201,168,76,0.06);
+            background: rgba(201,168,76,0.07);
             pointer-events: none;
         }
         .footer-main {
@@ -484,7 +493,7 @@
             <li><a href="{% url 'properties' %}">Properties</a></li>
             <li><a href="{% url 'event_home' %}">Upcoming Events</a></li>
             <li><a href="{% url 'about_us' %}">About Us</a></li>
-            <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
+            <li><a href="{% url 'contact_us' %}" class="nav-cta">Contact Us</a></li>
         </ul>
         <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
             <span></span><span></span><span></span>

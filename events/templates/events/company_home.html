@@ -363,16 +363,25 @@
 
     /* Scroll-down cue at the base of the hero */
     .ch-scroll-cue {
-        position: absolute; left: 50%; bottom: 1.6rem; transform: translateX(-50%);
-        z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
-        color: rgba(255,255,255,0.55); text-decoration: none;
+        position: absolute; left: 50%; bottom: 1.8rem; transform: translateX(-50%);
+        z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 0.55rem;
+        color: rgba(255,255,255,0.6); text-decoration: none;
         opacity: 0; animation: chFadeUp 0.9s cubic-bezier(.16,.84,.44,1) 1.1s forwards;
+        transition: color 0.25s ease;
     }
-    .ch-scroll-cue span { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; }
+    .ch-scroll-cue:hover { color: var(--gold); }
+    .ch-scroll-cue > span:first-child { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; }
+    .ch-scroll-cue-ring {
+        width: 34px; height: 34px; border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.3);
+        display: flex; align-items: center; justify-content: center;
+        transition: border-color 0.25s ease, background 0.25s ease;
+    }
+    .ch-scroll-cue:hover .ch-scroll-cue-ring { border-color: var(--gold); background: rgba(201,168,76,0.08); }
     .ch-scroll-cue .chevron { animation: chBounce 2s ease-in-out infinite; }
     @keyframes chBounce {
-        0%, 100% { transform: translateY(0); opacity: 0.5; }
-        50% { transform: translateY(6px); opacity: 1; }
+        0%, 100% { transform: translateY(0); opacity: 0.6; }
+        50% { transform: translateY(3px); opacity: 1; }
     }
 
     /* Generic scroll-reveal: elements start hidden/offset, JS flips .is-visible on when in view */
@@ -449,25 +458,21 @@
     <div class="ch-hero-overlay"></div>
     <div class="ch-hero-content">
         <div class="ch-hero-eyebrow">Savannah Woodlands</div>
-        <h1>Real Estate, <span class="accent">Across Nigeria, Global Reach</span></h1>
+        <h1>Real Estate Across Nigeria, <span class="accent">Global Reach</span></h1>
         <p class="ch-hero-tagline">
-            A leading real estate company specializing in connecting local and Diaspora buyers with prime residential, commercial, and land listings across Nigeria-offering
-            a seamless platform to discover, evaluate, and acquire real estate aligned with your investment goals.
+            A leading real estate company specializing in connecting local and Diaspora buyers with prime residential, commercial, and land listings across Nigeria — offering a seamless platform to discover, evaluate, and acquire real estate aligned with your investment goals.
         </p>
         <div class="ch-hero-actions">
             <a href="{% url 'event_home' %}" class="btn btn-gold">View Upcoming Events</a>
             <a href="{% url 'contact_us' %}" class="btn btn-outline">Contact Us</a>
         </div>
-        <div class="ch-hero-trust">
-            <span>Registered Real Estate Company</span>
-    
-            <span class="dot"></span>
-            <span>Nationwide Coverage</span>
-        </div>
+        
     </div>
     <a href="#events" class="ch-scroll-cue" aria-label="Scroll to explore">
        
-        <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        <span class="ch-scroll-cue-ring">
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
     </a>
 </section>
 
@@ -539,27 +544,11 @@
         <div class="why-grid">
             <div class="why-text" data-reveal="left">
                 <div class="ch-label">Why Choose Us</div>
-                <div class="ch-title">Built On Trust, Backed By Process</div>
-                <p class="lead">We don't just list properties — every listing goes through a thorough documentation review before it reaches you, and our team stays with you from first enquiry to final handover.</p>
-
-                <ul class="why-checklist" data-reveal-group>
-                    <li>
-                        <div class="why-check-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <div><strong>Careful Documentation Review</strong><span>Every property is checked for valid title, C of O, or deed before it's listed.</span></div>
-                    </li>
-                    <li>
-                        <div class="why-check-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <div><strong>Direct Access, No Middlemen Games</strong><span>Speak directly with sellers, developers, and our advisory team.</span></div>
-                    </li>
-                    <li>
-                        <div class="why-check-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <div><strong>In-Person Buying Events</strong><span>Meet investors, land owners, and developers face-to-face at our exhibitions.</span></div>
-                    </li>
-                    <li>
-                        <div class="why-check-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
-                        <div><strong>Support Through Closing</strong><span>From first enquiry to final handover, our team stays with you.</span></div>
-                    </li>
-                </ul>
+                <div class="ch-title">Your Partner in Smarter Real Estate Decisions</div>
+                <p class="lead">At Savannah Woodlands, we are committed to helping individuals and businesses navigate the real estate market with confidence. Whether you're buying, selling, or investing, we provide access to diverse property opportunities and strategic connections to help you achieve your goals.</p>
+                <p class="lead">Our approach is built on professionalism, transparency, and customer-focused service. We take the time to understand your needs, offer relevant guidance, and support you throughout your real estate journey—from your first enquiry to making well-informed decisions.</p>
+                <p class="lead">With Savannah Woodlands, you're not just exploring properties—you're partnering with a team dedicated to creating meaningful real estate opportunities and lasting investment solutions.</p>
+                
             </div>
 
             <div class="why-media" data-reveal="right">
